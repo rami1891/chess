@@ -29,6 +29,7 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
+
         throw new RuntimeException("Not implemented");
     }
 
@@ -39,6 +40,27 @@ public class ChessPiece {
         throw new RuntimeException("Not implemented");
     }
 
+    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
+        throw new RuntimeException("Not implemented");
+    }
+
+
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -47,6 +69,20 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        if (getPieceType() == PieceType.PAWN) {
+            return pawnMoves(board, myPosition);
+        } else if (getPieceType() == PieceType.KNIGHT) {
+            return knightMoves(board, myPosition);
+        } else if (getPieceType() == PieceType.BISHOP) {
+            return bishopMoves(board, myPosition);
+        } else if (getPieceType() == PieceType.ROOK) {
+            return rookMoves(board, myPosition);
+        } else if (getPieceType() == PieceType.QUEEN) {
+            return queenMoves(board, myPosition);
+        } else if (getPieceType() == PieceType.KING) {
+            return kingMoves(board, myPosition);
+        } else {
+            throw new RuntimeException("Not implemented");
+        }
     }
 }
