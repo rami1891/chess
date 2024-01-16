@@ -10,7 +10,7 @@ import java.util.HashMap;
  * signature of the existing methods.
  */
 public class ChessBoard {
-    private MAP<ChessPosition, ChessPiece> board;
+    private HashMap<ChessPosition, ChessPiece> board;
 
     public ChessBoard() {
         board = new HashMap<ChessPosition, ChessPiece>();
@@ -26,6 +26,10 @@ public class ChessBoard {
         board.put(position, piece);
 
         //throw new RuntimeException("Not implemented");
+    }
+
+    public boolean isEmpty(int position) {
+        return board.get(position) == null;
     }
 
     /**
