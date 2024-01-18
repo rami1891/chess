@@ -16,6 +16,10 @@ public class ChessBoard {
         board = new HashMap<ChessPosition, ChessPiece>();
     }
 
+    public ChessBoard(HashMap<ChessPosition, ChessPiece> board) {
+        this.board = board;
+    }
+
     /**
      * Adds a chess piece to the chessboard
      *
@@ -51,7 +55,6 @@ public class ChessBoard {
      */
     public void resetBoard() {
 
-//        throw new RuntimeException("Not implemented");
         // clear board first
         board.clear();
 
