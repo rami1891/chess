@@ -33,4 +33,13 @@ public class ChessPosition {
         return col;
                 //throw new RuntimeException("Not implemented");
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChessPosition) {
+            ChessPosition other = (ChessPosition) obj;
+            return this.row == other.row && this.col == other.col;
+        }
+        return false;
+    }
 }

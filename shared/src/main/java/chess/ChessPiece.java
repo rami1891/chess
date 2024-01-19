@@ -51,47 +51,8 @@ public class ChessPiece {
         //throw new RuntimeException("Not implemented");
     }
 
-    /**
-     * Calculates all the positions a pawn can move to
-     * Does not take into account moves that are illegal due to leaving the king in
-     * danger
-     *
-     * @return Collection of valid moves
-     */
-    private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        if((myPosition.getRow() >= 1 || myPosition.getRow() <= 8) && (myPosition.getColumn() >= 1 || myPosition.getColumn() <= 8)) {
-            if(board.isEmpty(myPosition.getRow() + 1)) {
-                return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()));
-            }
-        }
-        if (getTeamColor() == ChessGame.TeamColor.WHITE) {
-            if (myPosition.getRow() == 2) {
-                return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 2, myPosition.getColumn()));
-            }
-            return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn()));
-        } else {
-            if (myPosition.getRow() == 7) {
-                return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 2, myPosition.getColumn()));
-            }
-            return new ChessMove(myPosition, new ChessPosition(myPosition.getRow() - 1, myPosition.getColumn()));
-        }
-        throw new RuntimeException("Not implemented");
-    }
-    private Collection<ChessMove> knightMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-    }
-    private Collection<ChessMove> bishopMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-    }
-    private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-    }
-    private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-    }
-    private Collection<ChessMove> kingMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
-    }
+
+
 
 
 
@@ -103,20 +64,36 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (getPieceType() == PieceType.PAWN) {
-            return pawnMoves(board, myPosition);
-        } else if (getPieceType() == PieceType.KNIGHT) {
-            return knightMoves(board, myPosition);
-        } else if (getPieceType() == PieceType.BISHOP) {
-            return bishopMoves(board, myPosition);
-        } else if (getPieceType() == PieceType.ROOK) {
-            return rookMoves(board, myPosition);
-        } else if (getPieceType() == PieceType.QUEEN) {
-            return queenMoves(board, myPosition);
-        } else if (getPieceType() == PieceType.KING) {
-            return kingMoves(board, myPosition);
-        } else {
-            throw new RuntimeException("Not implemented");
+        switch (type) {
+            case KING:
+                return kingMoves(board, myPosition);
+            case QUEEN:
+                return queenMoves(board, myPosition);
+            case BISHOP:
+                return bishopMoves(board, myPosition);
+            case KNIGHT:
+                return knightMoves(board, myPosition);
+            case ROOK:
+                return rookMoves(board, myPosition);
+            case PAWN:
+                return pawnMoves(board, myPosition);
+            default:
+                throw new RuntimeException("Not implemented");
         }
+        //throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChessPiece) {
+            ChessPiece other = (ChessPiece) obj;
+            return other.pieceColor == this.pieceColor && other.type == this.type;
+        }
+           return false;
+    }
+
+    @Override
+    public String toString() {
+        return pieceColor + " " + type;
     }
 }
