@@ -18,7 +18,7 @@ public class ChessBoard {
     private ChessPiece[][] board;
 
     public ChessBoard() {
-       ChessPiece[][] board = new ChessPiece[8][8];
+       board = new ChessPiece[8][8];
     }
 
     public ChessBoard(ChessPiece[][] board) {
@@ -32,9 +32,15 @@ public class ChessBoard {
      * @param piece    the piece to add
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
-        int col = position.getColumn();
-        int row = position.getRow();
-        board[row][col] = piece;
+        int row = position.getRow()-1;
+        int col = position.getColumn()-1;
+        // Check if the provided position is within the valid range
+        if (row >= 0 && row < 8 && col >= 0 && col < 8) {
+            board[row][col] = piece;
+        } else {
+            // Handle invalid position (throw an exception, print an error, etc.)
+            throw new IllegalArgumentException("Invalid position: " + position);
+        }
 
         //throw new RuntimeException("Not implemented");
     }
@@ -50,7 +56,7 @@ public class ChessBoard {
     public ChessPiece getPiece(ChessPosition position) {
         int row = position.getRow();
         int col = position.getColumn();
-        return board[row][col];
+        return board[row-1][col-1];
     }
 
     /**
@@ -59,7 +65,7 @@ public class ChessBoard {
      */
     public void resetBoard() {
         //throw new RuntimeException("Not implemented");
-        ChessPiece[][] board = new ChessPiece[8][8];
+        board = new ChessPiece[8][8];
 
         board[0][0] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK);
         board[0][1] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT);

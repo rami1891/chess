@@ -42,4 +42,15 @@ public class ChessPosition {
         }
         return false;
     }
+
+    @Override
+    public String toString() {
+        return "(" + row + ", " + col + ")";
+    }
+
+
+    @Override
+    public int hashCode() {
+        return row * 10 + col;
+    }
 }

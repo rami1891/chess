@@ -24,7 +24,6 @@ public class ChessMove {
      * @return ChessPosition of starting location
      */
     public ChessPosition getStartPosition() {
-        
         return startPosition;
         //throw new RuntimeException("Not implemented");
     }
@@ -33,7 +32,6 @@ public class ChessMove {
      * @return ChessPosition of ending location
      */
     public ChessPosition getEndPosition() {
-
         return endPosition;
         //throw new RuntimeException("Not implemented");
     }
@@ -45,8 +43,32 @@ public class ChessMove {
      * @return Type of piece to promote a pawn to, or null if no promotion
      */
     public ChessPiece.PieceType getPromotionPiece() {
-
         return promotionPiece;
         //throw new RuntimeException("Not implemented");
     }
+
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof ChessMove) {
+            ChessMove other = (ChessMove) obj;
+            return this.startPosition.equals(other.startPosition) && this.endPosition.equals(other.endPosition) && this.promotionPiece == other.promotionPiece;
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "ChessMove [startPosition=" + startPosition + ", endPosition=" + endPosition + ", promotionPiece="
+                + promotionPiece + "]";
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17; // Choose a prime number as an initial value
+        result = 31 * result + startPosition.hashCode();
+        result = 31 * result + endPosition.hashCode();
+        result = 31 * result + (promotionPiece != null ? promotionPiece.hashCode() : 0);
+        return result;    }
+
 }
