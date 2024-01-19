@@ -341,21 +341,55 @@ public class ChessPiece {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         Collection<ChessMove> moves = new HashSet<>();
-        ChessPosition[] rookMoves = new ChessPosition[32];
+        ChessPosition[] rookMoves = new ChessPosition[8];
+        // down lane
         for (int i = 0; i < 8; i++) {
-            rookMoves[i] = new ChessPosition(row + i, col);
-            rookMoves[i + 8] = new ChessPosition(row - i, col);
-            rookMoves[i + 16] = new ChessPosition(row, col + i);
-            rookMoves[i + 24] = new ChessPosition(row, col - i);
+            rookMoves[i] = new ChessPosition(row + i + 1, col);
         }
-        for (int i = 0; i < 27; i++) {
-            if (rookMoves[i].getRow() < 0 || rookMoves[i].getRow() > 7 || rookMoves[i].getColumn() < 0 || rookMoves[i].getColumn() > 7) {
-                rookMoves[i] = null;
+        rookMoves = isValidMove(board, rookMoves);
+        for(ChessPosition rook : rookMoves){
+            if (rook == null){
+                continue;
             }
-            else{
-                moves.add(new ChessMove(myPosition, rookMoves[i], null));
-            }
+            moves.add(new ChessMove(myPosition, rook, null));
         }
+
+        // up lane
+        for (int i = 0; i < 8; i++) {
+            rookMoves[i] = new ChessPosition(row - i - 1, col);
+        }
+        rookMoves = isValidMove(board, rookMoves);
+        for(ChessPosition rook : rookMoves){
+            if (rook == null){
+                continue;
+            }
+            moves.add(new ChessMove(myPosition, rook, null));
+        }
+
+        // right lane
+        for (int i = 0; i < 8; i++) {
+            rookMoves[i] = new ChessPosition(row, col + i+ 1);
+        }
+        rookMoves = isValidMove(board, rookMoves);
+        for(ChessPosition rook : rookMoves){
+            if (rook == null){
+                continue;
+            }
+            moves.add(new ChessMove(myPosition, rook, null));
+        }
+
+        // left lane
+        for (int i = 0; i < 8; i++) {
+            rookMoves[i] = new ChessPosition(row, col - i - 1);
+        }
+        rookMoves = isValidMove(board, rookMoves);
+        for(ChessPosition rook : rookMoves){
+            if (rook == null){
+                continue;
+            }
+            moves.add(new ChessMove(myPosition, rook, null));
+        }
+
         return moves;
     }
 
