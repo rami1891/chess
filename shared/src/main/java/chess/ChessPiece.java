@@ -414,14 +414,14 @@ public class ChessPiece {
             pawnMoves[0] = new ChessPosition(row + 1, col);
             pawnMoves[1] = new ChessPosition(row + 1, col + 1);
             pawnMoves[2] = new ChessPosition(row + 1, col - 1);
-            pawnMoves[3] = (row == 2) ? new ChessPosition(row + 2, col) : null;
+            pawnMoves[3] = (row == 2 && board.getPiece(new ChessPosition(row + 1, col)) == null) ? new ChessPosition(row + 2, col) : null;
         } else {
             pawnMoves[0] = new ChessPosition(row - 1, col);
             pawnMoves[1] = new ChessPosition(row - 1, col + 1);
             pawnMoves[2] = new ChessPosition(row - 1, col - 1);
-            pawnMoves[3] = (row == 7) ? new ChessPosition(row - 2, col) : null;
+            pawnMoves[3] = (row == 7 && board.getPiece(new ChessPosition(row - 1, col)) == null) ? new ChessPosition(row - 2, col) : null;
         }
-        Collection<ChessMove> newMoves = new HashSet<>();
+        Collection<ChessMove> neMoves = new HashSet<>();
 
         for (ChessPosition pawnMove : pawnMoves) {
             if (pawnMove != null) {
@@ -448,53 +448,41 @@ public class ChessPiece {
             }
         }
 
-        if (pieceColor == ChessGame.TeamColor.WHITE) {
-            // Check for pawn promotion
-            if (row == 7) {
-                for (ChessMove move : moves) {
-                    if (move.getEndPosition().getRow() == 8) {
-                        // Pawn promotion
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.KNIGHT);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.BISHOP);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.ROOK);
-                        newMoves.add(move);
-
-                    }
-                }
-            }
-        } else {
-            // Check for pawn promotion
-            if (row == 2) {
-                for (ChessMove move : moves) {
-                    if (move.getEndPosition().getRow() == 1) {
-                        // Pawn promotion
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.KNIGHT);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.BISHOP);
-                        newMoves.add(move);
-                        move = new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.ROOK);
-                        newMoves.add(move);
-
-                    }
-                }
-            }
-        }
-        if((row == 7 && pieceColor == ChessGame.TeamColor.WHITE) || (row == 2 && pieceColor == ChessGame.TeamColor.BLACK)){
+        // Check for pawn promotion
+        if (pieceColor == ChessGame.TeamColor.WHITE && row == 7){
+            Collection<ChessMove> promMoves = new HashSet<>();
             for (ChessMove move : moves) {
-                if(move.getPromotionPiece() == null){
-                    moves.remove(move);
+                if (move.getEndPosition().getRow() == 8) {
+                    // Pawn promotion
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.KNIGHT));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.BISHOP));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.ROOK));
+                } else {
+                    promMoves.add(move);
                 }
             }
+            moves = promMoves; // Update the moves collection
+        } else if (pieceColor == ChessGame.TeamColor.BLACK && row == 2) {
+            Collection<ChessMove> promMoves = new HashSet<>();
+            for (ChessMove move : moves) {
+                if (move.getEndPosition().getRow() == 1) {
+                    // Pawn promotion
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.QUEEN));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.KNIGHT));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.BISHOP));
+                    promMoves.add(new ChessMove(move.getStartPosition(), move.getEndPosition(), ChessPiece.PieceType.ROOK));
+                } else {
+                    promMoves.add(move);
+                }
+            }
+            moves = promMoves; 
         }
-        moves.addAll(newMoves);
 
-        
+
+
+
+
         return moves;
     }
 
