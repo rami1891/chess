@@ -337,7 +337,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     private Collection<ChessMove> rookMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         Collection<ChessMove> moves = new HashSet<>();
@@ -404,7 +403,6 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     private Collection<ChessMove> pawnMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         Collection<ChessMove> moves = new HashSet<>();
@@ -421,8 +419,6 @@ public class ChessPiece {
             pawnMoves[2] = new ChessPosition(row - 1, col - 1);
             pawnMoves[3] = (row == 7 && board.getPiece(new ChessPosition(row - 1, col)) == null) ? new ChessPosition(row - 2, col) : null;
         }
-        Collection<ChessMove> neMoves = new HashSet<>();
-
         for (ChessPosition pawnMove : pawnMoves) {
             if (pawnMove != null) {
                 if (pawnMove.getRow() >= 1 && pawnMove.getRow() <= 8 && pawnMove.getColumn() >= 1 && pawnMove.getColumn() <= 8) {
@@ -434,7 +430,6 @@ public class ChessPiece {
                         if (pawnMove.getRow() == 2 && pieceColor == ChessGame.TeamColor.BLACK){
                             break;
                         }
-
                         // Move one square forward
                         moves.add(new ChessMove(myPosition, pawnMove, null));
                     } else if (Math.abs(pawnMove.getColumn() - col) == 1 && board.getPiece(pawnMove) != null
@@ -442,12 +437,9 @@ public class ChessPiece {
                         // Capture diagonally
                         moves.add(new ChessMove(myPosition, pawnMove, null));
                     }
-
-
                 }
             }
         }
-
         // Check for pawn promotion
         if (pieceColor == ChessGame.TeamColor.WHITE && row == 7){
             Collection<ChessMove> promMoves = new HashSet<>();
@@ -476,13 +468,8 @@ public class ChessPiece {
                     promMoves.add(move);
                 }
             }
-            moves = promMoves; 
+            moves = promMoves;
         }
-
-
-
-
-
         return moves;
     }
 
