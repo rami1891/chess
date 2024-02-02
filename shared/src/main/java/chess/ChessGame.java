@@ -61,8 +61,10 @@ public class ChessGame {
 
         }
         else{
+            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
 
-            return board.getPiece(startPosition).pieceMoves(board, startPosition);
+            moves.removeIf(move -> moveWillCauseCheck(move));
+            return moves;
         }
     }
 
@@ -165,7 +167,8 @@ public class ChessGame {
                 ChessPiece piece = board.getPiece(pos);
 
                 if (piece != null && piece.getTeamColor() == teamColor) {
-                    Collection<ChessMove> moves = validMoves(pos);
+
+                    Collection<ChessMove> moves = board.getPiece(pos).pieceMoves(board, pos);
 
                     if (moves != null) {
                         for (ChessMove move : moves) {
