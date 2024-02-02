@@ -61,9 +61,28 @@ public class ChessGame {
 
         }
         else{
+
             return board.getPiece(startPosition).pieceMoves(board, startPosition);
         }
     }
+
+    /**
+     * Return a boolean indicating if a move will cause a check for the current team
+     * or it will move out of check
+     */
+    public boolean moveWillCauseCheck(ChessMove move) {
+        ChessGame copy = new ChessGame();
+        copy.setBoard(board);
+        copy.setTeamTurn(teamTurn);
+        try {
+            copy.makeMove(move);
+        } catch (InvalidMoveException e) {
+            return true;
+        }
+        return copy.isInCheck(teamTurn);
+
+    }
+
 
     /**
      * Makes a move in a chess game
@@ -214,7 +233,20 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        for(int i = 1; i < 9; i++) {
+            for(int j = 1; j < 9; j++) {
+                ChessPosition pos = new ChessPosition(i, j);
+                if(board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor) {
+                    if(validMoves(pos) != null) {
+
+                        if(!validMoves(pos).isEmpty()) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 
