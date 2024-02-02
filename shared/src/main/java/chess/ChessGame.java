@@ -57,7 +57,11 @@ public class ChessGame {
         }
 
         if(board.getPiece(startPosition).getPieceType() == ChessPiece.PieceType.KING) {
-            return board.getPiece(startPosition).pieceMoves(board, startPosition);
+            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+            Collection<ChessMove> validMoves = kingValid(startPosition, moves);
+            validMoves.removeIf(move -> moveWillCauseCheck(move));
+            return validMoves;
+            //return board.getPiece(startPosition).pieceMoves(board, startPosition);
 
         }
         else{
@@ -236,21 +240,36 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        for(int i = 1; i < 9; i++) {
-            for(int j = 1; j < 9; j++) {
-                ChessPosition pos = new ChessPosition(i, j);
-                if(board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == teamColor) {
-                    if(validMoves(pos) != null) {
-
-                        if(!validMoves(pos).isEmpty()) {
+        if (teamColor == TeamColor.WHITE) {
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition pos = new ChessPosition(i, j);
+                    if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == TeamColor.WHITE) {
+                        Collection<ChessMove> moves = board.getPiece(pos).pieceMoves(board, pos);
+                        if (moves != null && !moves.isEmpty()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        else {
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition pos = new ChessPosition(i, j);
+                    if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == TeamColor.BLACK) {
+                        Collection<ChessMove> moves = board.getPiece(pos).pieceMoves(board, pos);
+                        if (moves != null && !moves.isEmpty()) {
                             return false;
                         }
                     }
                 }
             }
+            return true;
         }
-        return true;
     }
+
 
 
     /**
