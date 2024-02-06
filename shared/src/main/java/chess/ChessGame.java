@@ -44,26 +44,6 @@ public class ChessGame {
     }
 
     /**
-     * Gets a valid moves for a piece at the given location
-     *
-     * @param startPosition the piece to get valid moves for
-     * @return Set of valid moves for requested piece, or null if no piece at
-     * startPosition
-     */
-    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if(board.getPiece(startPosition) == null) {
-            return null;
-        }
-
-        else{
-            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-
-            moves.removeIf(move -> moveWillCauseCheck(move));
-            return moves;
-        }
-    }
-
-    /**
      * Return a boolean indicating if a move will cause a check for the current team
      * or it will move out of check
      */
@@ -79,11 +59,33 @@ public class ChessGame {
 
         copy.setBoard(newBoard);
         copy.setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
-            copy.board.addPiece(move.getEndPosition(), copy.board.getPiece(move.getStartPosition()));
-            copy.board.addPiece(move.getStartPosition(), null);
+        copy.board.addPiece(move.getEndPosition(), copy.board.getPiece(move.getStartPosition()));
+        copy.board.addPiece(move.getStartPosition(), null);
 
         return copy.isInCheck(copy.teamTurn);
 
+    }
+
+
+
+    /**
+     * Gets a valid moves for a piece at the given location
+     *
+     * @param startPosition the piece to get valid moves for
+     * @return Set of valid moves for requested piece, or null if no piece at
+     * startPosition
+     */
+    public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        if(board.getPiece(startPosition) == null) {
+            return null;
+        }
+        // Check if the piece is of the opposing team
+        else{
+            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+
+            moves.removeIf(move -> moveWillCauseCheck(move));
+            return moves;
+        }
     }
 
 
@@ -130,6 +132,7 @@ public class ChessGame {
                 teamTurn = (teamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
             }
             else {
+                // Move the piece
                 board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
                 board.addPiece(move.getStartPosition(), null);
                 teamTurn = (teamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
@@ -152,6 +155,7 @@ public class ChessGame {
         ChessGame copy = new ChessGame();
         ChessBoard newBoard = new ChessBoard();
 
+        // Copy the board
         for(int i = 1; i < 9; i++) {
             for(int j = 1; j < 9; j++) {
                 newBoard.addPiece(new ChessPosition(i, j), board.getPiece(new ChessPosition(i, j)));
@@ -161,7 +165,7 @@ public class ChessGame {
         copy.setTeamTurn(teamTurn);
 
 
-        //
+        // Check if the move is valid
         if(isInCheck(teamTurn)) {
             copy.board.addPiece(move.getEndPosition(), copy.board.getPiece(move.getStartPosition()));
             copy.board.addPiece(move.getStartPosition(), null);
@@ -226,6 +230,7 @@ public class ChessGame {
 
                     Collection<ChessMove> moves = board.getPiece(pos).pieceMoves(board, pos);
 
+                    // Check if the piece can move to the given position
                     if (moves != null) {
                         for (ChessMove move : moves) {
                             if (move.getEndPosition().equals(position)) {
@@ -247,6 +252,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public Collection<ChessMove> kingValid(ChessPosition startPosition, Collection<ChessMove> moves) {
+        // Check if the king can move to a position that is not under attack
         moves.removeIf(move -> isUnderAttack(move.getEndPosition(), board.getPiece(startPosition).getTeamColor()));
 
         return moves;
@@ -303,6 +309,7 @@ public class ChessGame {
             for (int i = 1; i < 9; i++) {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition pos = new ChessPosition(i, j);
+                    // Check if the piece is of the opposing team
                     if (board.getPiece(pos) != null && board.getPiece(pos).getTeamColor() == TeamColor.WHITE) {
                         Collection<ChessMove> moves = board.getPiece(pos).pieceMoves(board, pos);
                         if (moves != null && !moves.isEmpty()) {
