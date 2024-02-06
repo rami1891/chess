@@ -1,7 +1,6 @@
 package chess;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * For a class that can manage a chess game, making moves on a board
@@ -56,14 +55,6 @@ public class ChessGame {
             return null;
         }
 
-        if(board.getPiece(startPosition).getPieceType() == ChessPiece.PieceType.KING) {
-            Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-            Collection<ChessMove> validMoves = kingValid(startPosition, moves);
-            validMoves.removeIf(move -> moveWillCauseCheck(move));
-            return validMoves;
-            //return board.getPiece(startPosition).pieceMoves(board, startPosition);
-
-        }
         else{
             Collection<ChessMove> moves = board.getPiece(startPosition).pieceMoves(board, startPosition);
 
@@ -78,14 +69,20 @@ public class ChessGame {
      */
     public boolean moveWillCauseCheck(ChessMove move) {
         ChessGame copy = new ChessGame();
-        copy.setBoard(board);
-        copy.setTeamTurn(teamTurn);
-        try {
-            copy.makeMove(move);
-        } catch (InvalidMoveException e) {
-            return true;
+        ChessBoard newBoard = new ChessBoard();
+
+        for(int i = 1; i < 9; i++) {
+            for(int j = 1; j < 9; j++) {
+                newBoard.addPiece(new ChessPosition(i, j), board.getPiece(new ChessPosition(i, j)));
+            }
         }
-        return copy.isInCheck(teamTurn);
+
+        copy.setBoard(newBoard);
+        copy.setTeamTurn(board.getPiece(move.getStartPosition()).getTeamColor());
+            copy.board.addPiece(move.getEndPosition(), copy.board.getPiece(move.getStartPosition()));
+            copy.board.addPiece(move.getStartPosition(), null);
+
+        return copy.isInCheck(copy.teamTurn);
 
     }
 
@@ -103,15 +100,21 @@ public class ChessGame {
         if (board.getPiece(move.getStartPosition()) == null) {
             throw new InvalidMoveException("No piece at start position");
         }
+
+        if(isInCheck(board.getPiece(move.getStartPosition()).getTeamColor())) {
+            if(!tryMove(move)) {
+                throw new InvalidMoveException("Move will cause check");
+            }
+        }
+
         if (board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
             throw new InvalidMoveException("Not this team's turn");
         }
+
+
         if (board.getPiece(move.getStartPosition()).pieceMoves(board, move.getStartPosition()).contains(move)) {
             if(board.getPiece(move.getStartPosition()).getPieceType() == ChessPiece.PieceType.PAWN) {
                 if(move.getEndPosition().getRow() == 1 || move.getEndPosition().getRow() == 8) {
-//                    if(move.getPromotionPiece() == null) {
-//                        throw new InvalidMoveException("Pawn must be promoted");
-//                    }
                     board.addPiece(move.getEndPosition(), new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece()));
                 }
                 else {
@@ -125,14 +128,32 @@ public class ChessGame {
                 board.addPiece(move.getStartPosition(), null);
                 teamTurn = (teamTurn == TeamColor.WHITE) ? TeamColor.BLACK : TeamColor.WHITE;
             }
-
-
         }
         else {
             throw new InvalidMoveException("Invalid move");
         }
     }
 
+
+    public boolean tryMove(ChessMove move){
+        ChessGame copy = new ChessGame();
+        ChessBoard newBoard = new ChessBoard();
+
+        for(int i = 1; i < 9; i++) {
+            for(int j = 1; j < 9; j++) {
+                newBoard.addPiece(new ChessPosition(i, j), board.getPiece(new ChessPosition(i, j)));
+            }
+        }
+        copy.setBoard(newBoard);
+        copy.setTeamTurn(teamTurn);
+
+        if(isInCheck(teamTurn)) {
+            copy.board.addPiece(move.getEndPosition(), copy.board.getPiece(move.getStartPosition()));
+            copy.board.addPiece(move.getStartPosition(), null);
+            return !copy.isInCheck(teamTurn);
+        }
+        return true;
+    }
 
     public ChessPosition getKingPosition(TeamColor teamColor) {
         for(int i = 1; i < 9; i++) {
