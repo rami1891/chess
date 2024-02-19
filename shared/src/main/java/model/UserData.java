@@ -54,6 +54,8 @@ public class UserData {
         if ((this.email == null) ? (other.email != null) : !this.email.equals(other.email)) {
             return false;
         }
+
+        return true;
     }
 
     @Override
