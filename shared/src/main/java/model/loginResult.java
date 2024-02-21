@@ -6,7 +6,7 @@ public class loginResult {
         private String username;
         private String message;
 
-        public loginResult(String authToken, String username) {
+        public loginResult(String username, String authToken) {
             this.authToken = authToken;
             this.username = username;
         }
@@ -23,5 +23,9 @@ public class loginResult {
 
         public String getUsername() {
             return username;
+        }
+
+        public String getMessage() {
+            return "Username: " + username + " " + "AuthToken: " + authToken;
         }
 }

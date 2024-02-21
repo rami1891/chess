@@ -6,12 +6,16 @@ import java.util.*;
 public class GameDAO {
     public Collection<GameData> gameData;
 
+    public GameDAO() {
+        gameData = new ArrayList<GameData>();
+    }
+
 
     public void createGame(GameData game) throws DataAccessException{
     }
 
     public Collection<GameData> listGames() throws DataAccessException{
-        return null;
+        return gameData;
     }
 
     public void joinGame(GameData game) throws DataAccessException{
@@ -21,6 +25,8 @@ public class GameDAO {
     public void deleteGame() throws DataAccessException {
         gameData.clear();
     }
+
+
 
 
 }

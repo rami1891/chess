@@ -6,7 +6,7 @@ public class registerResult {
     private String username;
     private String message;
 
-    public registerResult(String authToken, String username) {
+    public registerResult(String username, String authToken) {
         this.authToken = authToken;
         this.username = username;
     }

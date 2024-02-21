@@ -6,6 +6,10 @@ import java.util.*;
 public class UserDAO {
     public Collection<UserData> userData;
 
+    public UserDAO() {
+        userData = new ArrayList<UserData>();
+    }
+
 
 
     /**
@@ -20,7 +24,14 @@ public class UserDAO {
     }
 
 
+
+
     public UserData readUser(String username) throws DataAccessException{
+         for (UserData user : userData) {
+            if (user.getUsername().equals(username)) {
+                return user;
+            }
+        }
         return null;
     }
 
