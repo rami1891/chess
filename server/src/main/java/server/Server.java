@@ -7,7 +7,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataAccess.DataAccessException;
 import dataAccess.DataErrorException;
-import model.AuthData;
+
 
 
 
@@ -39,8 +39,7 @@ public class Server {
         Spark.delete("/session", this::logout);
         Spark.get("/game", this::listGames);
         Spark.post("/game",this::createGame);
-
-
+        Spark.put("/game", this::joinGame);
 
 
 
@@ -56,17 +55,70 @@ public class Server {
     }
 
 
-    private Object createGame(Request req, Response res) throws DataAccessException, DataErrorException {
+
+    private Object joinGame(Request req, Response res) throws DataAccessException, DataErrorException {
         try{
-            var request = new Gson().fromJson(req.body(), GameData.class);
-            gameService.createGame(request);
-            return "";
+            String AuthToken = req.headers("Authorization");
+
+            var request = new Gson().fromJson(req.body(), joinGameRequest.class);
+            request.setAuthToken(AuthToken);
+            joinGameResult result = gameService.joinGame(request);
+            return new Gson().toJson(result);
         }
         catch (DataErrorException e){
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
                 errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("message", e.getMessage());
+                return new Gson().toJson(errorJson);
+            }
+            else if(e.getErrorCode() == 400){
+                res.status(400);
+                JsonObject errorJson = new JsonObject();
+                errorJson.addProperty("error", "Bad Request");
+                errorJson.addProperty("message", e.getMessage());
+                return new Gson().toJson(errorJson);
+            }
+            else if(e.getErrorCode() == 403){
+                res.status(403);
+                JsonObject errorJson = new JsonObject();
+                errorJson.addProperty("error", "Already Taken");
+                errorJson.addProperty("message", e.getMessage());
+                return new Gson().toJson(errorJson);
+            }
+            else{
+                res.status(500);
+                JsonObject errorJson = new JsonObject();
+                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("message", e.getMessage());
+                return new Gson().toJson(errorJson);
+            }
+        }
+    }
+    private Object createGame(Request req, Response res) throws DataAccessException, DataErrorException {
+        try{
+            String AuthToken = req.headers("Authorization");
+
+            var request = new Gson().fromJson(req.body(), createGameRequest.class);
+            request.setAuthToken(AuthToken);
+           createGameResult result =  gameService.createGame(request);
+            return new Gson().toJson(result);
+
+        }
+        catch (DataErrorException e){
+
+            if(e.getErrorCode() == 401){
+                res.status(401);
+                JsonObject errorJson = new JsonObject();
+                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("message", e.getMessage());
+                return new Gson().toJson(errorJson);
+            }
+            else if(e.getErrorCode() == 400){
+                res.status(400);
+                JsonObject errorJson = new JsonObject();
+                errorJson.addProperty("error", "Bad Request");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }

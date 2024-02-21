@@ -34,4 +34,22 @@ public class AuthDAO {
         }
         return null;
     }
+
+    public boolean findAuth(String authtoken) throws DataAccessException{
+        for(AuthData auth : authData){
+            if(auth.getAuthToken().equals(authtoken)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public AuthData getAuth(String authtoken) throws DataAccessException{
+        for(AuthData auth : authData){
+            if(auth.getAuthToken().equals(authtoken)){
+                return auth;
+            }
+        }
+        return null;
+    }
 }
