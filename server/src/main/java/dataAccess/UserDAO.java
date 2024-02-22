@@ -23,9 +23,6 @@ public class UserDAO {
 
     }
 
-
-
-
     public UserData readUser(String username) throws DataAccessException{
          for (UserData user : userData) {
             if (user.getUsername().equals(username)) {
@@ -35,9 +32,6 @@ public class UserDAO {
         return null;
     }
 
-
-    public void updateUser(UserData user) throws DataAccessException {
-    }
 
     public void deleteUser() throws DataAccessException {
         userData.clear();

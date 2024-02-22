@@ -20,6 +20,7 @@ public class GameDAO {
     }
 
     public void joinGame(GameData game) throws DataAccessException{
+        gameData.add(game);
     }
 
 

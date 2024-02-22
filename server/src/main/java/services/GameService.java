@@ -47,7 +47,11 @@ public class GameService {
         userDAO.createUser(user);
         AuthData myAuth = new AuthData();
         myAuth.setUsername(request.getUsername());
-        myAuth.setAuthToken(UUID.randomUUID().toString());
+        String auth = UUID.randomUUID().toString();
+        while(authDAO.findAuth(auth)){
+            auth = UUID.randomUUID().toString();
+        }
+        myAuth.setAuthToken(auth);
         authDAO.createAuth(myAuth);
 
         registerResult registerResult = new registerResult(request.getUsername(), myAuth.getAuthToken());
@@ -78,7 +82,11 @@ public class GameService {
 
         AuthData myAuth = new AuthData();
         myAuth.setUsername(request.getUsername());
-        myAuth.setAuthToken(UUID.randomUUID().toString());
+        String auth = UUID.randomUUID().toString();
+        while(authDAO.findAuth(auth)){
+            auth = UUID.randomUUID().toString();
+        }
+        myAuth.setAuthToken(auth);
         authDAO.createAuth(myAuth);
 
         loginResult loginResult = new loginResult(request.getUsername(), myAuth.getAuthToken());
@@ -93,7 +101,12 @@ public class GameService {
         }
     }
 
-    public Collection<GameData> listGames() throws DataAccessException, DataErrorException {
+    public Collection<GameData> listGames(listGamesRequest request) throws DataAccessException, DataErrorException {
+
+        if(request.getAuthToken() == null || !authDAO.findAuth(request.getAuthToken())){
+            throw new DataErrorException(401, "Error: unauthorized");
+        }
+
         Collection<GameData> games = gameDAO.listGames();
         if(games == null){
             throw new DataErrorException(401, "Error: internal server error");
@@ -145,14 +158,15 @@ public class GameService {
         if(!authDAO.findAuth(request.getAuthToken())){
             throw new DataErrorException(401, "Error: unauthorized");
         }
-        if(request.getPlayerColor() == null || request.getPlayerColor().equals("")){
-            throw new DataErrorException(403, "Error: bad request");
-        }
-
 
 
         if(gameDAO.getGame(request.getGameID()) == null){
             throw new DataErrorException(401, "Error: unauthorized");
+        }
+
+        if(request.getPlayerColor() == null || request.getPlayerColor().equals("")){
+            joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), null, null);
+            return joinGameResult;
         }
 
         if(gameDAO.getGame(request.getGameID()).getBlackUsername() != null && gameDAO.getGame(request.getGameID()).getWhiteUsername() != null){
@@ -161,13 +175,11 @@ public class GameService {
 
         if(request.getPlayerColor().equals("WHITE") && gameDAO.getGame(request.getGameID()).getWhiteUsername() == null){
             gameDAO.getGame(request.getGameID()).setWhiteUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
-            gameDAO.getGame(request.getGameID()).setBlackUsername(null);
             joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), "white", null);
             return joinGameResult;
         }
         else if(request.getPlayerColor().equals("BLACK") && gameDAO.getGame(request.getGameID()).getBlackUsername() == null){
             gameDAO.getGame(request.getGameID()).setBlackUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
-            gameDAO.getGame(request.getGameID()).setWhiteUsername(null);
             joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), "black", null);
             return joinGameResult;
         }

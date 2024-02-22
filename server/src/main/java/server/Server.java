@@ -134,8 +134,16 @@ public class Server {
 
     private Object listGames(Request req, Response res) throws DataAccessException {
         try{
-            Collection<GameData> games = gameService.listGames();
+
+            String AuthToken = req.headers("Authorization");
+            listGamesRequest request = new listGamesRequest(AuthToken);
+
+
+
+            listGamesResult games = new listGamesResult(gameService.listGames(request));
+
             return new Gson().toJson(games);
+
         }
         catch (DataErrorException e){
             if(e.getErrorCode() == 401){
@@ -241,7 +249,7 @@ public class Server {
 
     private Object logout(Request req, Response res) throws DataAccessException, DataErrorException {
         try {
-            gameService.logout(AuthData.getUsername());
+            gameService.logout(req.headers("Authorization"));
             return "";
         }
         catch (DataErrorException e){

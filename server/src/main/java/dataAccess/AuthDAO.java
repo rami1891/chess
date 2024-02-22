@@ -17,17 +17,14 @@ public class AuthDAO {
         authData.add(auth); //add auth to the collection
     }
 
-    public Collection<AuthData> listAuths() throws DataAccessException{
-        return null;
-    }
 
     public void deleteAuth() throws DataAccessException {
         authData.clear();
     }
 
-    public AuthData deleteMyAuth(String username) throws DataAccessException {
+    public AuthData deleteMyAuth(String authToken) throws DataAccessException {
         for (AuthData auth : authData) {
-            if (auth.getUsername().equals(username)) {
+            if (auth.getAuthToken().equals(authToken)) {
                 authData.remove(auth);
                 return auth;
             }

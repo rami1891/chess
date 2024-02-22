@@ -2,15 +2,15 @@ package model;
 
 public class AuthData {
 
-    private static String username;
-    private static String authToken;
+    private String username;
+    private String authToken;
 
     public AuthData() {
 //        this.username = username;
 //        this.authToken = authToken;
     }
 
-    public static String getUsername() {
+    public String getUsername() {
         return username;
     }
 
