@@ -9,9 +9,6 @@ public class listGamesResult {
 
     }
 
-    public Collection<GameData> getGames(){
-        return games;
-    }
 
 
 }

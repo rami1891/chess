@@ -245,12 +245,7 @@ public class ChessGame {
     }
 
 
-    /**
-     * Determines if the given team is in checkmate
-     *
-     * @param teamColor which team to check for checkmate
-     * @return True if the specified team is in checkmate
-     */
+
     public Collection<ChessMove> kingValid(ChessPosition startPosition, Collection<ChessMove> moves) {
         // Check if the king can move to a position that is not under attack
         moves.removeIf(move -> isUnderAttack(move.getEndPosition(), board.getPiece(startPosition).getTeamColor()));

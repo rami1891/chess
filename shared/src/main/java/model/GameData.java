@@ -60,9 +60,6 @@ public class GameData {
         this.blackUsername = blackUsername;
     }
 
-    public void setGameName(String gameName) {
-        this.gameName = gameName;
-    }
 
 
 
