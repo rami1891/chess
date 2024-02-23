@@ -11,23 +11,50 @@ public class GameDAO {
     }
 
 
+
+    /**
+     * Creates a new game in the database
+     * @param game
+     * @throws DataAccessException
+     */
     public void createGame(GameData game) throws DataAccessException{
         gameData.add(game);
     }
 
+
+    /**
+     * Deletes all games in the database
+     * @throws DataAccessException
+     */
     public Collection<GameData> listGames() throws DataAccessException{
         return gameData;
     }
 
+
+    /**
+     * Deletes all games in the database
+     * @throws DataAccessException
+     */
     public void joinGame(GameData game) throws DataAccessException{
         gameData.add(game);
     }
 
 
+
+    /**
+     * Deletes all games in the database
+     * @throws DataAccessException
+     */
     public void deleteGame() throws DataAccessException {
         gameData.clear();
     }
 
+
+    /**
+     * Deletes a specific game in the database
+     * @param gameName
+     * @throws DataAccessException
+     */
     public boolean findGame(String gameName) throws DataAccessException{
         for(GameData game : gameData){
             if(game.getGameName().equals(gameName)){
@@ -39,6 +66,11 @@ public class GameDAO {
 
 
 
+    /**
+     * Deletes a specific game in the database
+     * @param gameID
+     * @throws DataAccessException
+     */
     public GameData getGame(int gameID) throws DataAccessException{
         for(GameData game : gameData){
             if(game.getGameID() == gameID){
@@ -47,10 +79,6 @@ public class GameDAO {
         }
         return null;
     }
-
-
-
-
 
 
 }

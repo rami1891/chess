@@ -22,6 +22,11 @@ public class GameService {
     AuthDAO authDAO = new AuthDAO();
     GameDAO gameDAO = new GameDAO();
 
+
+    /**
+     * Clears the database
+     * @throws DataAccessException
+     */
     public void clear() throws DataAccessException {
         userDAO.deleteUser();
         authDAO.deleteAuth();
@@ -29,6 +34,14 @@ public class GameService {
 
     }
 
+
+    /**
+     * Registers a new user in the database and returns an auth token
+     * @param request
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public registerResult register(registerRequest request) throws DataAccessException, DataErrorException{
         if(request.getUsername() == null || request.getPassword() == null || request.getEmail() == null){
             //throw new DataAccessException("Invalid input");
@@ -60,6 +73,14 @@ public class GameService {
 
     }
 
+
+    /**
+     * Logs in a user and returns an auth token
+     * @param request
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public loginResult login(loginRequest request) throws DataAccessException, DataErrorException {
         if(request.getUsername() == null || request.getPassword() == null){
             throw new DataErrorException(401, "Error: unauthorized");
@@ -94,13 +115,26 @@ public class GameService {
 
     }
 
+    /**
+     * Logs out a user
+     * @param request
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public void logout(String request) throws DataAccessException, DataErrorException {
-//        authDAO.deleteMyAuth(request);
         if(authDAO.deleteMyAuth(request) == null){
             throw new DataErrorException(401, "Error: unauthorized");
         }
     }
 
+
+    /**
+     * Lists all the games in the database
+     * @param request
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public Collection<GameData> listGames(listGamesRequest request) throws DataAccessException, DataErrorException {
 
         if(request.getAuthToken() == null || !authDAO.findAuth(request.getAuthToken())){
@@ -115,13 +149,18 @@ public class GameService {
     }
 
 
+
+    /**
+     * Creates a new game in the database
+     * @param request
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public createGameResult createGame(createGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameName() == null || request.getGameName().equals("")){
             throw new DataErrorException(400, "Error: bad request");
         }
-//        if(request.getGameName().equals("")){
-//            throw new DataErrorException(401, "Error: bad request");
-//        }
 
         if(gameDAO.findGame(request.getGameName())){
             throw new DataErrorException(401, "Error: already taken");
@@ -140,16 +179,21 @@ public class GameService {
             newGameID = ThreadLocalRandom.current().nextInt();
         }
 
-
         game.setGameID(newGameID);
-
-
 
         createGameResult createGameResult = new createGameResult(game.getGameID());
         return createGameResult;
 
     }
 
+
+    /**
+     * Joins a game in the database
+     * @param request
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     public joinGameResult joinGame(joinGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameID() <= 0){
             throw new DataErrorException(400, "Error: bad request");

@@ -8,26 +8,18 @@ import com.google.gson.JsonObject;
 import dataAccess.DataAccessException;
 import dataAccess.DataErrorException;
 
-
-
-
-//import exception.ResponseException;
-
-import dataAccess. *;
-
-import java.util.Collection;
-
 public class Server {
 
     private final GameService gameService;
-
     public Server() {
         this.gameService = new GameService();
     }
 
-
-
-
+    /**
+     * Starts the server
+     * @param desiredPort
+     * @return
+     */
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
@@ -41,21 +33,29 @@ public class Server {
         Spark.post("/game",this::createGame);
         Spark.put("/game", this::joinGame);
 
-
-
         // Register your endpoints and handle exceptions here.
 
         Spark.awaitInitialization();
         return Spark.port();
     }
 
+
+    /**
+     * Stops the server
+     */
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
     }
-
-
-
+    
+    /**
+     * Joins a game
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object joinGame(Request req, Response res) throws DataAccessException, DataErrorException {
         try{
             String AuthToken = req.headers("Authorization");
@@ -96,6 +96,15 @@ public class Server {
             }
         }
     }
+
+    /**
+     * Creates a game
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object createGame(Request req, Response res) throws DataAccessException, DataErrorException {
         try{
             String AuthToken = req.headers("Authorization");
@@ -132,13 +141,20 @@ public class Server {
         }
     }
 
+
+    /**
+     * Lists all the games
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object listGames(Request req, Response res) throws DataAccessException {
         try{
 
             String AuthToken = req.headers("Authorization");
             listGamesRequest request = new listGamesRequest(AuthToken);
-
-
 
             listGamesResult games = new listGamesResult(gameService.listGames(request));
 
@@ -166,14 +182,28 @@ public class Server {
 
     }
 
+    /**
+     * Clears the database
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     */
     private Object clear(Request req, Response res) throws DataAccessException {
 
         gameService.clear();
-//        res.status(200);
-
         return "";
     }
 
+
+    /**
+     * Logs in a user
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object login(Request req, Response res) throws DataAccessException, DataErrorException{
         try {
             var request = new Gson().fromJson(req.body(), loginRequest.class);
@@ -195,13 +225,20 @@ public class Server {
                 errorJson.addProperty("error", "Unauthorized");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
-                //return new Gson().toJson(e.getMessage());
             }
         }
 
     }
 
 
+    /**
+     * Registers a user
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object register(Request req, Response res) throws DataAccessException, DataErrorException {
         try {
             var request = new Gson().fromJson(req.body(), registerRequest.class);
@@ -237,16 +274,18 @@ public class Server {
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
-
-
         }
-
-
-
-
-
     }
 
+
+    /**
+     * Logs out a user
+     * @param req
+     * @param res
+     * @return
+     * @throws DataAccessException
+     * @throws DataErrorException
+     */
     private Object logout(Request req, Response res) throws DataAccessException, DataErrorException {
         try {
             gameService.logout(req.headers("Authorization"));

@@ -19,10 +19,13 @@ public class UserDAO {
      */
     public void createUser(UserData user) throws DataAccessException{
         userData.add(user); //add user to the collection
-
-
     }
 
+
+    /**
+     * Deletes all users in the database
+     * @throws DataAccessException
+     */
     public UserData readUser(String username) throws DataAccessException{
          for (UserData user : userData) {
             if (user.getUsername().equals(username)) {
@@ -33,11 +36,22 @@ public class UserDAO {
     }
 
 
+
+    /**
+     * Deletes all users in the database
+     * @throws DataAccessException
+     */
     public void deleteUser() throws DataAccessException {
         userData.clear();
     }
 
 
+
+    /**
+     * Deletes a specific user in the database
+     * @param username
+     * @throws DataAccessException
+     */
     public boolean findUser(String username) throws DataAccessException {
         for (UserData user : userData) {
             if (user.getUsername().equals(username)) {
