@@ -1,12 +1,12 @@
 package model;
 
-public class registerResult {
+public class RegisterResult {
 
     private String authToken;
     private String username;
     private String message;
 
-    public registerResult(String username, String authToken) {
+    public RegisterResult(String username, String authToken) {
         this.authToken = authToken;
         this.username = username;
     }

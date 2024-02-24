@@ -1,10 +1,10 @@
 package model;
 
-public class createGameResult {
+public class CreateGameResult {
     private int gameID;
     private String authToken;
 
-    public createGameResult(int gameID) {
+    public CreateGameResult(int gameID) {
         this.gameID = gameID;
     }
 

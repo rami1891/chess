@@ -1,12 +1,12 @@
 package model;
 
-public class loginResult {
+public class LoginResult {
 
     private String authToken;
     private String username;
 
 
-    public loginResult(String username, String authToken) {
+    public LoginResult(String username, String authToken) {
         this.authToken = authToken;
         this.username = username;
     }

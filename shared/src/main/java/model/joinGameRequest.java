@@ -1,11 +1,11 @@
 package model;
 
-public class joinGameRequest {
+public class JoinGameRequest {
     private String playerColor;
     private String authToken;
     private int gameID;
 
-    public joinGameRequest(String playerColor, String authToken, int gameID) {
+    public JoinGameRequest(String playerColor, String authToken, int gameID) {
         this.playerColor = playerColor;
         this.authToken = authToken;
         this.gameID = gameID;

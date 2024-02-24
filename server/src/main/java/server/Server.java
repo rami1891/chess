@@ -59,39 +59,39 @@ public class Server {
      */
     private Object joinGame(Request req, Response res) throws DataAccessException, DataErrorException {
         try{
-            String AuthToken = req.headers("Authorization");
+            String authToken = req.headers("Authorization");
 
-            var request = new Gson().fromJson(req.body(), joinGameRequest.class);
-            request.setAuthToken(AuthToken);
-            joinGameResult result = gameService.joinGame(request);
+            var request = new Gson().fromJson(req.body(), JoinGameRequest.class);
+            request.setAuthToken(authToken);
+            JoinGameResult result = gameService.joinGame(request);
             return new Gson().toJson(result);
         }
         catch (DataErrorException e){
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized join game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else if(e.getErrorCode() == 400){
                 res.status(400);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Bad Request");
+                errorJson.addProperty("error", "Bad Request to Join Game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else if(e.getErrorCode() == 403){
                 res.status(403);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Already Taken");
+                errorJson.addProperty("error", "Already Taken for Join Game ");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else{
                 res.status(500);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("error", "Description of Join Game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -108,11 +108,11 @@ public class Server {
      */
     private Object createGame(Request req, Response res) throws DataAccessException, DataErrorException {
         try{
-            String AuthToken = req.headers("Authorization");
+            String authToken = req.headers("Authorization");
 
-            var request = new Gson().fromJson(req.body(), createGameRequest.class);
-            request.setAuthToken(AuthToken);
-           createGameResult result =  gameService.createGame(request);
+            var request = new Gson().fromJson(req.body(), CreateGameRequest.class);
+            request.setAuthToken(authToken);
+            CreateGameResult result =  gameService.createGame(request);
             return new Gson().toJson(result);
 
         }
@@ -121,21 +121,21 @@ public class Server {
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized create game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else if(e.getErrorCode() == 400){
                 res.status(400);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Bad Request");
+                errorJson.addProperty("error", "Bad Request to Create Game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else{
                 res.status(500);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("error", "Description of Create Game");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -154,10 +154,10 @@ public class Server {
     private Object listGames(Request req, Response res) throws DataAccessException {
         try{
 
-            String AuthToken = req.headers("Authorization");
-            listGamesRequest request = new listGamesRequest(AuthToken);
+            String authToken = req.headers("Authorization");
+            ListGamesRequest request = new ListGamesRequest(authToken);
 
-            listGamesResult games = new listGamesResult(gameService.listGames(request));
+            ListGamesResult games = new ListGamesResult(gameService.listGames(request));
 
             return new Gson().toJson(games);
 
@@ -166,14 +166,14 @@ public class Server {
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("error", "Description of List Games");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else{
                 res.status(500);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("error", "Description of List Games");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -207,8 +207,8 @@ public class Server {
      */
     private Object login(Request req, Response res) throws DataAccessException, DataErrorException{
         try {
-            var request = new Gson().fromJson(req.body(), loginRequest.class);
-            loginResult result = gameService.login(request);
+            var request = new Gson().fromJson(req.body(), LoginRequest.class);
+            LoginResult result = gameService.login(request);
 
             return new Gson().toJson(result);
         }
@@ -216,14 +216,14 @@ public class Server {
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized login");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else{
                 res.status(500);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized login");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -242,8 +242,8 @@ public class Server {
      */
     private Object register(Request req, Response res) throws DataAccessException, DataErrorException {
         try {
-            var request = new Gson().fromJson(req.body(), registerRequest.class);
-            registerResult result = gameService.register(request);
+            var request = new Gson().fromJson(req.body(), RegisterRequest.class);
+            RegisterResult result = gameService.register(request);
             return new Gson().toJson(result);
         }
 
@@ -251,11 +251,8 @@ public class Server {
         catch (DataErrorException e){
             if(e.getErrorCode() == 400){
                 res.status(400);
-                //return new Gson().toJson(e.getMessage());
-
-
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Bad Request");
+                errorJson.addProperty("error", "Bad Request to Register");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -263,7 +260,7 @@ public class Server {
                 res.status(403);
 
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Already Taken");
+                errorJson.addProperty("error", "Already Taken for Register");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -271,7 +268,7 @@ public class Server {
                 res.status(500);
 
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Description");
+                errorJson.addProperty("error", "Description of Register");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
@@ -296,14 +293,14 @@ public class Server {
             if(e.getErrorCode() == 401){
                 res.status(401);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized logout");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }
             else{
                 res.status(500);
                 JsonObject errorJson = new JsonObject();
-                errorJson.addProperty("error", "Unauthorized");
+                errorJson.addProperty("error", "Unauthorized logout");
                 errorJson.addProperty("message", e.getMessage());
                 return new Gson().toJson(errorJson);
             }

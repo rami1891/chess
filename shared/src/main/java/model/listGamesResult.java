@@ -2,9 +2,9 @@ package model;
 
 import java.util.Collection;
 
-public class listGamesResult {
+public class ListGamesResult {
     private Collection<GameData> games;
-    public listGamesResult(Collection<GameData> games){
+    public ListGamesResult(Collection<GameData> games){
         this.games = games;
 
     }

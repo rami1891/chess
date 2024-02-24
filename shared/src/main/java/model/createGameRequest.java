@@ -1,10 +1,10 @@
 package model;
 
-public class createGameRequest {
+public class CreateGameRequest {
     private String gameName;
     private String authToken;
 
-    public createGameRequest(String gameName, String authToken) {
+    public CreateGameRequest(String gameName, String authToken) {
         this.gameName = gameName;
         this.authToken = authToken;
     }

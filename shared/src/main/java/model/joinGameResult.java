@@ -1,12 +1,12 @@
 package model;
 
-public class joinGameResult {
+public class JoinGameResult {
 private String authToken;
     private int gameID;
     private String playerColor;
     private String errorMessage;
 
-    public joinGameResult(String authToken, int gameID, String playerColor, String errorMessage) {
+    public JoinGameResult(String authToken, int gameID, String playerColor, String errorMessage) {
         this.authToken = authToken;
         this.gameID = gameID;
         this.playerColor = playerColor;

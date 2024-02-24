@@ -1,18 +1,18 @@
 package model;
 
-public class registerRequest {
+public class RegisterRequest {
     private String username;
     private String password;
     private String email;
 
-    public registerRequest(String username, String password, String email) {
+    public RegisterRequest(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
 
     }
 
-    public registerRequest() {
+    public RegisterRequest() {
         this.username = null;
         this.password = null;
         this.email = null;

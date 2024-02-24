@@ -7,7 +7,7 @@ import java.util.Random;
 
 import spark.*;
 
-import model.registerRequest;
+import model.RegisterRequest;
 import com.google.gson.Gson;
 
 import java.awt.font.GlyphMetrics;
@@ -17,7 +17,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class GameService {
 
-    registerRequest registerRequest = new registerRequest();
+    RegisterRequest registerRequest = new RegisterRequest();
     UserDAO userDAO = new UserDAO();
     AuthDAO authDAO = new AuthDAO();
     GameDAO gameDAO = new GameDAO();
@@ -42,7 +42,7 @@ public class GameService {
      * @throws DataAccessException
      * @throws DataErrorException
      */
-    public registerResult register(registerRequest request) throws DataAccessException, DataErrorException{
+    public RegisterResult register(RegisterRequest request) throws DataAccessException, DataErrorException{
         if(request.getUsername() == null || request.getPassword() == null || request.getEmail() == null){
             //throw new DataAccessException("Invalid input");
             throw new DataErrorException(400, "Error: bad request");
@@ -67,7 +67,7 @@ public class GameService {
         myAuth.setAuthToken(auth);
         authDAO.createAuth(myAuth);
 
-        registerResult registerResult = new registerResult(request.getUsername(), myAuth.getAuthToken());
+        RegisterResult registerResult = new RegisterResult(request.getUsername(), myAuth.getAuthToken());
         return registerResult;
 
 
@@ -81,7 +81,7 @@ public class GameService {
      * @throws DataAccessException
      * @throws DataErrorException
      */
-    public loginResult login(loginRequest request) throws DataAccessException, DataErrorException {
+    public LoginResult login(LoginRequest request) throws DataAccessException, DataErrorException {
         if(request.getUsername() == null || request.getPassword() == null){
             throw new DataErrorException(401, "Error: unauthorized");
         }
@@ -110,7 +110,7 @@ public class GameService {
         myAuth.setAuthToken(auth);
         authDAO.createAuth(myAuth);
 
-        loginResult loginResult = new loginResult(request.getUsername(), myAuth.getAuthToken());
+        LoginResult loginResult = new LoginResult(request.getUsername(), myAuth.getAuthToken());
         return loginResult;
 
     }
@@ -135,7 +135,7 @@ public class GameService {
      * @throws DataAccessException
      * @throws DataErrorException
      */
-    public Collection<GameData> listGames(listGamesRequest request) throws DataAccessException, DataErrorException {
+    public Collection<GameData> listGames(ListGamesRequest request) throws DataAccessException, DataErrorException {
 
         if(request.getAuthToken() == null || !authDAO.findAuth(request.getAuthToken())){
             throw new DataErrorException(401, "Error: unauthorized");
@@ -157,7 +157,7 @@ public class GameService {
      * @throws DataAccessException
      * @throws DataErrorException
      */
-    public createGameResult createGame(createGameRequest request) throws DataAccessException, DataErrorException {
+    public CreateGameResult createGame(CreateGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameName() == null || request.getGameName().equals("")){
             throw new DataErrorException(400, "Error: bad request");
         }
@@ -181,7 +181,7 @@ public class GameService {
 
         game.setGameID(newGameID);
 
-        createGameResult createGameResult = new createGameResult(game.getGameID());
+        CreateGameResult createGameResult = new CreateGameResult(game.getGameID());
         return createGameResult;
 
     }
@@ -194,7 +194,7 @@ public class GameService {
      * @throws DataAccessException
      * @throws DataErrorException
      */
-    public joinGameResult joinGame(joinGameRequest request) throws DataAccessException, DataErrorException {
+    public JoinGameResult joinGame(JoinGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameID() <= 0){
             throw new DataErrorException(400, "Error: bad request");
         }
@@ -209,7 +209,7 @@ public class GameService {
         }
 
         if(request.getPlayerColor() == null || request.getPlayerColor().equals("")){
-            joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), null, null);
+            JoinGameResult joinGameResult = new JoinGameResult(request.getAuthToken(), request.getGameID(), null, null);
             return joinGameResult;
         }
 
@@ -219,12 +219,12 @@ public class GameService {
 
         if(request.getPlayerColor().equals("WHITE") && gameDAO.getGame(request.getGameID()).getWhiteUsername() == null){
             gameDAO.getGame(request.getGameID()).setWhiteUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
-            joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), "white", null);
+            JoinGameResult joinGameResult = new JoinGameResult(request.getAuthToken(), request.getGameID(), "white", null);
             return joinGameResult;
         }
         else if(request.getPlayerColor().equals("BLACK") && gameDAO.getGame(request.getGameID()).getBlackUsername() == null){
             gameDAO.getGame(request.getGameID()).setBlackUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
-            joinGameResult joinGameResult = new joinGameResult(request.getAuthToken(), request.getGameID(), "black", null);
+            JoinGameResult joinGameResult = new JoinGameResult(request.getAuthToken(), request.getGameID(), "black", null);
             return joinGameResult;
         }
         else{

@@ -22,43 +22,43 @@ public class serviceTests {
     // Add tests here
     @Test
     public void testRegisterPositive() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         assertNotNull(gameService.register(request).getAuthToken());
 
     }
 
     @Test
     public void testRegisterNegative() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
 
-        registerRequest request2 = new registerRequest("rami", "password", "email");
+        RegisterRequest request2 = new RegisterRequest("rami", "password", "email");
         assertThrows(Exception.class, () -> gameService.register(request2));
     }
 
     @Test
     public void testLoginPositive() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         assertNotNull(gameService.login(request2).getAuthToken());
     }
 
     @Test
     public void testLoginNegative() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("ramiarafeh", "password");
+        LoginRequest request2 = new LoginRequest("ramiarafeh", "password");
         assertThrows(Exception.class, () -> gameService.login(request2));
     }
 
     @Test
     public void testCreateGamePositive() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
-        createGameRequest request3 = new createGameRequest("rami", authToken);
+        CreateGameRequest request3 = new CreateGameRequest("rami", authToken);
         assert(gameService.createGame(request3).getGameID() >= 0);
 
 
@@ -66,84 +66,84 @@ public class serviceTests {
 
     @Test
     public void testCreateGameNegative() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        createGameRequest request3 = new createGameRequest("rami", "wrongAuthToken");
+        CreateGameRequest request3 = new CreateGameRequest("rami", "wrongAuthToken");
         assertThrows(Exception.class, () -> gameService.createGame(request3));
     }
 
     @Test
     public void testClear() throws Exception {
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
         gameService.clear();
-        registerRequest request2 = new registerRequest("rami", "password", "email");
+        RegisterRequest request2 = new RegisterRequest("rami", "password", "email");
         assertNotNull(gameService.register(request2).getAuthToken());
     }
 
     @Test
     public void testListGamesPositive() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
-        createGameRequest request3 = new createGameRequest("rami", authToken);
+        CreateGameRequest request3 = new CreateGameRequest("rami", authToken);
         gameService.createGame(request3);
-        listGamesRequest request4 = new listGamesRequest(authToken);
+        ListGamesRequest request4 = new ListGamesRequest(authToken);
         assertNotNull(gameService.listGames(request4));
     }
 
     @Test
     public void testListGamesNegative() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
-        listGamesRequest request4 = new listGamesRequest("wrongAuthToken");
+        ListGamesRequest request4 = new ListGamesRequest("wrongAuthToken");
         assertThrows(Exception.class, () -> gameService.listGames(request4));
     }
 
     @Test
     public void testLogoutPositive() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
         gameService.logout(authToken);
-        loginRequest request3 = new loginRequest("rami", "password");
+        LoginRequest request3 = new LoginRequest("rami", "password");
         assertNotNull(gameService.login(request3).getAuthToken());
     }
 
     @Test
     public void testLogoutNegative() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         gameService.login(request2);
         assertThrows(Exception.class, () -> gameService.logout("wrongAuthToken"));
     }
 
     @Test
     public void testJoinPositive() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
-        createGameRequest request3 = new createGameRequest("rami", authToken);
+        CreateGameRequest request3 = new CreateGameRequest("rami", authToken);
 
-        joinGameRequest request6 = new joinGameRequest("BLACK", authToken, gameService.createGame(request3).getGameID());
+        JoinGameRequest request6 = new JoinGameRequest("BLACK", authToken, gameService.createGame(request3).getGameID());
         assertNotNull(gameService.joinGame(request6).getAuthToken());
     }
 
     @Test
     public void testJoinNegative() throws Exception{
-        registerRequest request = new registerRequest("rami", "password", "email");
+        RegisterRequest request = new RegisterRequest("rami", "password", "email");
         gameService.register(request);
-        loginRequest request2 = new loginRequest("rami", "password");
+        LoginRequest request2 = new LoginRequest("rami", "password");
         String authToken = gameService.login(request2).getAuthToken();
-        createGameRequest request3 = new createGameRequest("rami", authToken);
+        CreateGameRequest request3 = new CreateGameRequest("rami", authToken);
 
-        joinGameRequest request6 = new joinGameRequest("BLACK", authToken, 0);
+        JoinGameRequest request6 = new JoinGameRequest("BLACK", authToken, 0);
         assertThrows(Exception.class, () -> gameService.joinGame(request6));
     }
 

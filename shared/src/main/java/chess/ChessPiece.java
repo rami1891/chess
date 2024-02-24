@@ -36,7 +36,6 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
 
-    // TODO: implement getTeamColor()
     public ChessGame.TeamColor getTeamColor() {
         return pieceColor;
 
@@ -45,7 +44,6 @@ public class ChessPiece {
     /**
      * @return which type of chess piece this piece is
      */
-    // TODO: implement getPieceType()
     public PieceType getPieceType() {
         return type;
     }
@@ -120,12 +118,10 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     private Collection<ChessMove> queenMoves(ChessBoard board, ChessPosition myPosition) {
-        //throw new RuntimeException("Not implemented");
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
         Collection<ChessMove> moves = new HashSet<>();
         ChessPosition[] queenMoves = new ChessPosition[8];
-
         // down lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row + i + 1, col);
@@ -137,7 +133,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // up lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row - i - 1, col);
@@ -149,7 +144,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // right lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row, col + i+ 1);
@@ -161,7 +155,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // left lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row, col - i - 1);
@@ -173,7 +166,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // down right lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row + i + 1, col + i+ 1);
@@ -185,7 +177,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // up left lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row - i - 1, col - i -1);
@@ -197,7 +188,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // up right lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row + i+ 1, col - i - 1);
@@ -209,7 +199,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         // down left lane
         for (int i = 0; i < 8; i++) {
             queenMoves[i] = new ChessPosition(row - i - 1, col + i + 1);
@@ -221,7 +210,6 @@ public class ChessPiece {
             }
             moves.add(new ChessMove(myPosition, queen, null));
         }
-
         return moves;
     }
 

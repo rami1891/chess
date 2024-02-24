@@ -1,8 +1,8 @@
 package model;
 
-public class listGamesRequest {
+public class ListGamesRequest {
     String authToken;
-    public listGamesRequest(String authToken) {
+    public ListGamesRequest(String authToken) {
         this.authToken = authToken;
     }
 
