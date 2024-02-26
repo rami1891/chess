@@ -1,12 +1,9 @@
 package serviceTests;
 
-import model.*;
-import org.junit.jupiter.api.Assertions;
+import model.requests.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import services.GameService;
-
-import java.net.HttpURLConnection;
 
 import static org.junit.jupiter.api.Assertions.*;
 

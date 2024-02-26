@@ -2,15 +2,14 @@ package services;
 
 import dataAccess.*;
 import model.*;
-import java.util.Random;
 
 
-import spark.*;
+import model.requests.*;
+import model.results.CreateGameResult;
+import model.results.JoinGameResult;
+import model.results.LoginResult;
+import model.results.RegisterResult;
 
-import model.RegisterRequest;
-import com.google.gson.Gson;
-
-import java.awt.font.GlyphMetrics;
 import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
