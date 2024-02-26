@@ -52,8 +52,8 @@ public class ChessGame {
         ChessBoard newBoard = new ChessBoard();
 
         for(int i = 1; i < 9; i++) {
-            for(int j = 1; j < 9; j++) {
-                newBoard.addPiece(new ChessPosition(i, j), board.getPiece(new ChessPosition(i, j)));
+            for(int k = 1; k < 9; k++) {
+                newBoard.addPiece(new ChessPosition(i, k), board.getPiece(new ChessPosition(i, k)));
             }
         }
 
