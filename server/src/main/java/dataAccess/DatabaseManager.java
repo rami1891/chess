@@ -67,4 +67,39 @@ public class DatabaseManager {
             throw new DataAccessException(e.getMessage());
         }
     }
+
+    private static final String[] createStatements = {
+        "CREATE TABLE IF NOT EXISTS Users (" +
+            "username VARCHAR(255) PRIMARY KEY," +
+            "password VARCHAR(255) NOT NULL" +
+                "email VARCHAR(255) NOT NULL" +
+        ")",
+        "CREATE TABLE IF NOT EXISTS Auth (" +
+            "authToken VARCHAR(255) PRIMARY KEY," +
+            "username VARCHAR(255) NOT NULL," +
+            "FOREIGN KEY (username) REFERENCES Users(username)" +
+        ")",
+        "CREATE TABLE IF NOT EXISTS Games (" +
+                "gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
+                "whiteUsername VARCHAR(255)," +
+                "blackUsername VARCHAR(255)," +
+            "gameName VARCHAR(255) NOT NULL," +
+                "game TEXT NOT NULL," +
+            "FOREIGN KEY (whiteUsername) REFERENCES Users(username)," +
+            "FOREIGN KEY (blackUsername) REFERENCES Users(username)" +
+        ")"
+    };
+
+    static void configureDatabase() throws DataAccessException {
+        DatabaseManager.createDatabase();
+        try (var conn = getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
 }

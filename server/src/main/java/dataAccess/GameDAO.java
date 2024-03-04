@@ -3,13 +3,7 @@ package dataAccess;
 import model.GameData;
 import java.util.*;
 
-public class GameDAO {
-    public Collection<GameData> gameData;
-
-    public GameDAO() {
-        gameData = new ArrayList<GameData>();
-    }
-
+public interface GameDAO {
 
 
     /**
@@ -17,27 +11,21 @@ public class GameDAO {
      * @param game
      * @throws DataAccessException
      */
-    public void createGame(GameData game) throws DataAccessException{
-        gameData.add(game);
-    }
+    public void createGame(GameData game) throws DataAccessException;
 
 
     /**
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public Collection<GameData> listGames() throws DataAccessException{
-        return gameData;
-    }
+    public Collection<GameData> listGames() throws DataAccessException;
 
 
     /**
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public void joinGame(GameData game) throws DataAccessException{
-        gameData.add(game);
-    }
+    public void joinGame(GameData game) throws DataAccessException;
 
 
 
@@ -45,9 +33,7 @@ public class GameDAO {
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public void deleteGame() throws DataAccessException {
-        gameData.clear();
-    }
+    public void deleteGame() throws DataAccessException;
 
 
     /**
@@ -55,14 +41,7 @@ public class GameDAO {
      * @param gameName
      * @throws DataAccessException
      */
-    public boolean findGame(String gameName) throws DataAccessException{
-        for(GameData game : gameData){
-            if(game.getGameName().equals(gameName)){
-                return true;
-            }
-        }
-        return false;
-    }
+    public boolean findGame(String gameName) throws DataAccessException;
 
 
 
@@ -71,14 +50,7 @@ public class GameDAO {
      * @param gameID
      * @throws DataAccessException
      */
-    public GameData getGame(int gameID) throws DataAccessException{
-        for(GameData game : gameData){
-            if(game.getGameID() == gameID){
-                return game;
-            }
-        }
-        return null;
-    }
+    public GameData getGame(int gameID) throws DataAccessException;
 
 
 }

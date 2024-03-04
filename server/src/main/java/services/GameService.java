@@ -17,9 +17,10 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameService {
 
     RegisterRequest registerRequest = new RegisterRequest();
-    UserDAO userDAO = new UserDAO();
-    AuthDAO authDAO = new AuthDAO();
-    GameDAO gameDAO = new GameDAO();
+
+    UserDAO userDAO = new UserDAOMem();
+    AuthDAO authDAO = new AuthDAOMem();
+    GameDAO gameDAO = new GameDAOMem();
 
 
     /**
