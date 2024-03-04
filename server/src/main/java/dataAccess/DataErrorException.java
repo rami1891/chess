@@ -5,8 +5,6 @@ public class DataErrorException extends Exception{
     public DataErrorException(int errorCode, String message) {
         super(message);
         this.errorCode = errorCode;
-
-
     }
 
     public int getErrorCode() {
