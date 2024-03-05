@@ -12,7 +12,7 @@ import dataAccess.DataErrorException;
 public class Server {
 
     private final GameService gameService;
-    public Server() {
+    public Server(){
         this.gameService = new GameService();
     }
 
@@ -191,7 +191,7 @@ public class Server {
      * @return
      * @throws DataAccessException
      */
-    private Object clear(Request req, Response res) throws DataAccessException {
+    private Object clear(Request req, Response res) throws DataAccessException, DataErrorException {
 
         gameService.clear();
         return "";

@@ -10,14 +10,14 @@ public interface UserDAO {
      * @param user
      * @throws DataAccessException
      */
-    public void createUser(UserData user) throws DataAccessException;
+    public void createUser(UserData user) throws DataAccessException, DataErrorException;
 
 
     /**
      * Deletes all users in the database
      * @throws DataAccessException
      */
-    public UserData readUser(String username) throws DataAccessException;
+    public UserData readUser(String username) throws DataAccessException, DataErrorException;
 
 
 
@@ -25,7 +25,7 @@ public interface UserDAO {
      * Deletes all users in the database
      * @throws DataAccessException
      */
-    public void deleteUser() throws DataAccessException;
+    public void deleteUser() throws DataAccessException, DataErrorException;
 
 
 
@@ -34,5 +34,5 @@ public interface UserDAO {
      * @param username
      * @throws DataAccessException
      */
-    public boolean findUser(String username) throws DataAccessException;
+    public boolean findUser(String username) throws DataAccessException, DataErrorException;
 }

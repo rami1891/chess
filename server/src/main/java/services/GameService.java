@@ -17,17 +17,26 @@ import java.util.concurrent.ThreadLocalRandom;
 public class GameService {
 
     RegisterRequest registerRequest = new RegisterRequest();
+    UserDAO userDAO;
+    AuthDAO authDAO;
+    GameDAO gameDAO;
 
-    UserDAO userDAO = new UserDAOMem();
-    AuthDAO authDAO = new AuthDAOMem();
-    GameDAO gameDAO = new GameDAOMem();
+    public GameService() {
+        try{
+            userDAO = new MySqlUserDAO();
+            authDAO = new MySqlAuthDAO();
+            gameDAO = new MySqlGameDAO();
+        } catch (DataErrorException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
     /**
      * Clears the database
      * @throws DataAccessException
      */
-    public void clear() throws DataAccessException {
+    public void clear() throws DataAccessException, DataErrorException {
         userDAO.deleteUser();
         authDAO.deleteAuth();
         gameDAO.deleteGame();
@@ -196,7 +205,7 @@ public class GameService {
      */
     public JoinGameResult joinGame(JoinGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameID() <= 0){
-            throw new DataErrorException(400, "Error: bad request");
+            throw new DataErrorException(401, "Error: bad request");
         }
 
         if(!authDAO.findAuth(request.getAuthToken())){

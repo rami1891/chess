@@ -11,21 +11,21 @@ public interface GameDAO {
      * @param game
      * @throws DataAccessException
      */
-    public void createGame(GameData game) throws DataAccessException;
+    public void createGame(GameData game) throws DataAccessException, DataErrorException;
 
 
     /**
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public Collection<GameData> listGames() throws DataAccessException;
+    public Collection<GameData> listGames() throws DataAccessException, DataErrorException;
 
 
     /**
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public void joinGame(GameData game) throws DataAccessException;
+    public void joinGame(GameData game) throws DataAccessException, DataErrorException;
 
 
 
@@ -33,7 +33,7 @@ public interface GameDAO {
      * Deletes all games in the database
      * @throws DataAccessException
      */
-    public void deleteGame() throws DataAccessException;
+    public void deleteGame() throws DataAccessException, DataErrorException;
 
 
     /**
@@ -41,7 +41,7 @@ public interface GameDAO {
      * @param gameName
      * @throws DataAccessException
      */
-    public boolean findGame(String gameName) throws DataAccessException;
+    public boolean findGame(String gameName) throws DataAccessException, DataErrorException;
 
 
 
@@ -50,7 +50,6 @@ public interface GameDAO {
      * @param gameID
      * @throws DataAccessException
      */
-    public GameData getGame(int gameID) throws DataAccessException;
-
+    public GameData getGame(int gameID) throws DataAccessException, DataErrorException;
 
 }

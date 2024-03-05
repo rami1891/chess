@@ -15,20 +15,20 @@ public interface AuthDAO {
      * @param auth
      * @throws DataAccessException
      */
-    public void createAuth(AuthData auth) throws DataAccessException;
+    public void createAuth(AuthData auth) throws DataAccessException, DataErrorException;
 
     /**
      * Deletes all auths in the database
      * @throws DataAccessException
      */
-    public void deleteAuth() throws DataAccessException;
+    public void deleteAuth() throws DataAccessException, DataErrorException;
 
     /**
      * Deletes a specific auth in the database
      * @param authToken
      * @throws DataAccessException
      */
-    public AuthData deleteMyAuth(String authToken) throws DataAccessException;
+    public AuthData deleteMyAuth(String authToken) throws DataAccessException, DataErrorException;
 
 
     /**
@@ -37,7 +37,7 @@ public interface AuthDAO {
      * @return
      * @throws DataAccessException
      */
-    public boolean findAuth(String authtoken) throws DataAccessException;
+    public boolean findAuth(String authtoken) throws DataAccessException, DataErrorException;
 
 
     /**
@@ -46,5 +46,5 @@ public interface AuthDAO {
      * @return
      * @throws DataAccessException
      */
-    public AuthData getAuth(String authtoken) throws DataAccessException;
+    public AuthData getAuth(String authtoken) throws DataAccessException, DataErrorException;
 }

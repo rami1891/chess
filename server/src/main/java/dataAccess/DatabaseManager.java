@@ -34,7 +34,7 @@ public class DatabaseManager {
     /**
      * Creates the database if it does not already exist.
      */
-    static void createDatabase() throws DataAccessException {
+    static void createDatabase() throws DataErrorException{
         try {
             var statement = "CREATE DATABASE IF NOT EXISTS " + databaseName;
             var conn = DriverManager.getConnection(connectionUrl, user, password);
@@ -42,7 +42,7 @@ public class DatabaseManager {
                 preparedStatement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataErrorException(500, e.getMessage());
         }
     }
 
@@ -58,39 +58,46 @@ public class DatabaseManager {
      * }
      * </code>
      */
-    static Connection getConnection() throws DataAccessException {
+    static Connection getConnection() throws DataErrorException {
         try {
             var conn = DriverManager.getConnection(connectionUrl, user, password);
             conn.setCatalog(databaseName);
             return conn;
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataErrorException(500, e.getMessage());
         }
     }
 
     private static final String[] createStatements = {
         "CREATE TABLE IF NOT EXISTS Users (" +
-            "username VARCHAR(255) PRIMARY KEY," +
-            "password VARCHAR(255) NOT NULL" +
+            "username VARCHAR(255) NOT NULL PRIMARY KEY," +
+            "password VARCHAR(255) NOT NULL," +
                 "email VARCHAR(255) NOT NULL" +
-        ")",
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci",
+
+
         "CREATE TABLE IF NOT EXISTS Auth (" +
             "authToken VARCHAR(255) PRIMARY KEY," +
-            "username VARCHAR(255) NOT NULL," +
-            "FOREIGN KEY (username) REFERENCES Users(username)" +
-        ")",
+            "username VARCHAR(255) NOT NULL" +
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci",
+
+
         "CREATE TABLE IF NOT EXISTS Games (" +
                 "gameID INT NOT NULL AUTO_INCREMENT PRIMARY KEY," +
                 "whiteUsername VARCHAR(255)," +
                 "blackUsername VARCHAR(255)," +
             "gameName VARCHAR(255) NOT NULL," +
                 "game TEXT NOT NULL," +
-            "FOREIGN KEY (whiteUsername) REFERENCES Users(username)," +
-            "FOREIGN KEY (blackUsername) REFERENCES Users(username)" +
-        ")"
+                "UNIQUE (gameName)" +
+
+        ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci"
     };
 
-    static void configureDatabase() throws DataAccessException {
+    public static void main(String[] args) throws DataErrorException {
+        configureDatabase();
+    }
+
+    static void configureDatabase() throws DataErrorException {
         DatabaseManager.createDatabase();
         try (var conn = getConnection()) {
             for (var statement : createStatements) {
@@ -99,7 +106,7 @@ public class DatabaseManager {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException(e.getMessage());
+            throw new DataErrorException(500, e.getMessage());
         }
     }
 }
