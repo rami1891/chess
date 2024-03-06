@@ -35,6 +35,7 @@ public class dataAccessTests {
         authDAO.deleteAuth();
     }
 
+    // MySqlUserDAO tests
     @Test
     public void testCreateUserPositive() throws Exception {
         userDAO.createUser(new UserData("rami", "password", "email"));
@@ -77,6 +78,8 @@ public class dataAccessTests {
         assertFalse(userDAO.findUser("rami"));
     }
 
+
+    // MySqlAuthDAO tests
     @Test
     public void testCreateAuthPositive() throws Exception {
         AuthData auth = new AuthData();
@@ -155,6 +158,8 @@ public class dataAccessTests {
         assertFalse(authDAO.findAuth("auth"));
     }
 
+
+    // MySqlGameDAO tests
 
     @Test
     public void testCreateGamePositive() throws Exception {
