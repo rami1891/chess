@@ -41,14 +41,14 @@ public class AuthDAOMem implements AuthDAO {
      */
     @Override
 
-    public AuthData deleteMyAuth(String authToken) throws DataAccessException {
+    public void deleteMyAuth(String authToken) throws DataAccessException, DataErrorException {
         for (AuthData auth : authData) {
             if (auth.getAuthToken().equals(authToken)) {
                 authData.remove(auth);
-                return auth;
+
             }
         }
-        return null;
+        throw new DataErrorException(401, "Error: Unauthorized");
     }
 
 

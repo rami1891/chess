@@ -9,6 +9,7 @@ import model.results.CreateGameResult;
 import model.results.JoinGameResult;
 import model.results.LoginResult;
 import model.results.RegisterResult;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -104,8 +105,11 @@ public class GameService {
 
 
         }
+        var hashedPassword = userDAO.readUser(request.getUsername()).getPassword();
 
-        if(!userDAO.readUser(request.getUsername()).getPassword().equals(request.getPassword())){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if(!encoder.matches(request.getPassword(), hashedPassword)){
             throw new DataErrorException(401, "Error: unauthorized");
 
         }
@@ -131,9 +135,7 @@ public class GameService {
      * @throws DataErrorException
      */
     public void logout(String request) throws DataAccessException, DataErrorException {
-        if(authDAO.deleteMyAuth(request) == null){
-            throw new DataErrorException(401, "Error: unauthorized");
-        }
+        authDAO.deleteMyAuth(request);
     }
 
 
@@ -181,14 +183,15 @@ public class GameService {
 
 
         GameData game = new GameData(request.getGameName());
-        gameDAO.createGame(game);
-
         int newGameID = ThreadLocalRandom.current().nextInt();
         while(newGameID <=0){
             newGameID = ThreadLocalRandom.current().nextInt();
         }
 
         game.setGameID(newGameID);
+        gameDAO.createGame(game);
+
+
 
         CreateGameResult createGameResult = new CreateGameResult(game.getGameID());
         return createGameResult;
@@ -205,7 +208,7 @@ public class GameService {
      */
     public JoinGameResult joinGame(JoinGameRequest request) throws DataAccessException, DataErrorException {
         if(request.getGameID() <= 0){
-            throw new DataErrorException(401, "Error: bad request");
+            throw new DataErrorException(400, "Error: bad request");
         }
 
         if(!authDAO.findAuth(request.getAuthToken())){

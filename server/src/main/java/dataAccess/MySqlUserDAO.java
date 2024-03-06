@@ -1,6 +1,7 @@
 package dataAccess;
 
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static dataAccess.DatabaseManager.configureDatabase;
 
@@ -14,8 +15,10 @@ public class MySqlUserDAO implements UserDAO{
         var statement = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
         var username = user.getUsername();
         var password = user.getPassword();
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        String hashedPassword = encoder.encode(password);
         var email = user.getEmail();
-        executeStatement(statement, username, password, email);
+        executeStatement(statement, username, hashedPassword, email);
 
     }
 

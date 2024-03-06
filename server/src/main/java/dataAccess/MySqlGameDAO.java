@@ -1,12 +1,14 @@
 package dataAccess;
 
 import chess.ChessGame;
+import com.google.gson.Gson;
 import model.GameData;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static dataAccess.DatabaseManager.configureDatabase;
+import static java.sql.Types.NULL;
 
 public class MySqlGameDAO implements GameDAO{
     public MySqlGameDAO() throws DataErrorException {
@@ -20,23 +22,29 @@ public class MySqlGameDAO implements GameDAO{
         var whiteUsername = game.getWhiteUsername();
         var blackUsername = game.getBlackUsername();
          ChessGame chessGame = game.getGame();
-        executeStatement(statement, gameID, whiteUsername, blackUsername, gameName, chessGame);
+         Gson chess = new Gson();
+         String chessGameObj = chess.toJson(chessGame);
+        executeStatement(statement, gameID, whiteUsername, blackUsername, gameName, chessGameObj);
 
     }
 
-    private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame chessGame) throws DataErrorException{
+    private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, String chessGame) throws DataErrorException{
         try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
 
-            if(gameID != 0)
+            if(gameID >= 0)
                 stmt.setInt(1, gameID);
             if(whiteUsername != null)
                 stmt.setString(2, whiteUsername);
+            else stmt.setNull(2, NULL);
             if(blackUsername != null)
                 stmt.setString(3, blackUsername);
+            else stmt.setNull(3, NULL);
             if(gameName != null)
                 stmt.setString(4, gameName);
+            else stmt.setNull(4, NULL);
             if(chessGame != null)
-                stmt.setObject(5, chessGame);
+                stmt.setString(5, chessGame);
+            else stmt.setNull(5, NULL);
             stmt.executeUpdate();
         } catch (Exception e) {
             throw new DataErrorException(500, "Error when executing statement: " + statement);
@@ -55,8 +63,10 @@ public class MySqlGameDAO implements GameDAO{
                 var whiteUsername = rs.getString("whiteUsername");
                 var blackUsername = rs.getString("blackUsername");
                 var gameName = rs.getString("gameName");
-                var game = (ChessGame) rs.getObject("game");
-                games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
+                var game = rs.getString("game");
+                Gson gson = new Gson();
+                ChessGame gameObj = gson.fromJson(game, ChessGame.class);
+                games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, gameObj));
             }
             return games;
         } catch (Exception e) {
@@ -66,7 +76,7 @@ public class MySqlGameDAO implements GameDAO{
 
     @Override
     public void joinGame(GameData game) throws DataErrorException {
-
+        var statement = "UPDATE Games SET blackUsername = ? whiteUsername = ? WHERE gameID = ?";
     }
 
     @Override
@@ -100,8 +110,10 @@ public class MySqlGameDAO implements GameDAO{
                 var whiteUsername = rs.getString("whiteUsername");
                 var blackUsername = rs.getString("blackUsername");
                 var gameName = rs.getString("gameName");
-                var game = (ChessGame) rs.getObject("game");
-                return new GameData(gameID, whiteUsername, blackUsername, gameName, game);
+                var game = rs.getString("game");
+                Gson gson = new Gson();
+                ChessGame gameObj = gson.fromJson(game, ChessGame.class);
+                return new GameData(gameID, whiteUsername, blackUsername, gameName, gameObj);
             }
         } catch (Exception e) {
             throw new DataErrorException(500, "Error when reading game");
