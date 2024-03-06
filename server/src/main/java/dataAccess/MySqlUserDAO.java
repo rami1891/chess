@@ -7,6 +7,10 @@ import static dataAccess.DatabaseManager.configureDatabase;
 
 public class MySqlUserDAO implements UserDAO{
 
+    /**
+     * Constructor
+     * @throws DataErrorException
+     */
     public MySqlUserDAO() throws DataErrorException{
         configureDatabase();
     }
@@ -26,7 +30,6 @@ public class MySqlUserDAO implements UserDAO{
         String hashedPassword = encoder.encode(password);
         var email = user.getEmail();
         executeStatement(statement, username, hashedPassword, email);
-
     }
 
 
@@ -82,7 +85,6 @@ public class MySqlUserDAO implements UserDAO{
 
     /**
      * Deletes a user from the database
-     * @param username
      * @throws DataErrorException
      */
     @Override

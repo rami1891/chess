@@ -11,6 +11,11 @@ import static dataAccess.DatabaseManager.configureDatabase;
 import static java.sql.Types.NULL;
 
 public class MySqlGameDAO implements GameDAO{
+
+    /**
+     * Constructor
+     * @throws DataErrorException
+     */
     public MySqlGameDAO() throws DataErrorException {
         configureDatabase();
     }
@@ -20,7 +25,6 @@ public class MySqlGameDAO implements GameDAO{
      * @param game
      * @throws DataErrorException
      */
-
     @Override
     public void createGame(GameData game) throws DataErrorException {
         var statement = "INSERT INTO Games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
@@ -35,7 +39,6 @@ public class MySqlGameDAO implements GameDAO{
 
          // execute statement
         executeStatement(statement, gameID, whiteUsername, blackUsername, gameName, chessGameObj);
-
     }
 
     /**
@@ -48,7 +51,6 @@ public class MySqlGameDAO implements GameDAO{
      * @param chessGame
      * @throws DataErrorException
      */
-
     private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, String chessGame) throws DataErrorException{
         try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
             if(gameID >= 0)
@@ -111,6 +113,8 @@ public class MySqlGameDAO implements GameDAO{
     public void joinGame(GameData game) throws DataErrorException {
         var statement = "UPDATE Games SET blackUsername = ?, whiteUsername = ? WHERE gameID = ?";
         var gameID = game.getGameID();
+
+        // check if gameID is valid, this is a double check to make sure the game exists
         if(getGame(gameID) == null) throw new DataErrorException(500, "Error: gameID is invalid");
 
         var whiteUsername = game.getWhiteUsername();

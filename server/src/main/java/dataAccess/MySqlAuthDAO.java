@@ -6,6 +6,11 @@ import static dataAccess.DatabaseManager.configureDatabase;
 
 public class MySqlAuthDAO implements AuthDAO{
 
+
+    /**
+     * Constructor
+     * @throws DataErrorException
+     */
     public MySqlAuthDAO() throws DataErrorException {
         configureDatabase();
     }
@@ -64,7 +69,7 @@ public class MySqlAuthDAO implements AuthDAO{
      */
     @Override
     public void deleteMyAuth(String authToken) throws DataErrorException {
-        if(findAuth(authToken) == false)
+        if(!findAuth(authToken))
             throw new DataErrorException(401, "Error: Unauthorized");
 
         var statement = "DELETE FROM Auth WHERE authToken = ?";
