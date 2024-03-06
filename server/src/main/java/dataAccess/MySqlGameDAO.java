@@ -14,6 +14,13 @@ public class MySqlGameDAO implements GameDAO{
     public MySqlGameDAO() throws DataErrorException {
         configureDatabase();
     }
+
+    /**
+     * Creates a new game in the database
+     * @param game
+     * @throws DataErrorException
+     */
+
     @Override
     public void createGame(GameData game) throws DataErrorException {
         var statement = "INSERT INTO Games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
@@ -21,16 +28,29 @@ public class MySqlGameDAO implements GameDAO{
         var gameName = game.getGameName();
         var whiteUsername = game.getWhiteUsername();
         var blackUsername = game.getBlackUsername();
+        // serializing stuff
          ChessGame chessGame = game.getGame();
          Gson chess = new Gson();
          String chessGameObj = chess.toJson(chessGame);
+
+         // execute statement
         executeStatement(statement, gameID, whiteUsername, blackUsername, gameName, chessGameObj);
 
     }
 
+    /**
+     * Executes a statement
+     * @param statement
+     * @param gameID
+     * @param whiteUsername
+     * @param blackUsername
+     * @param gameName
+     * @param chessGame
+     * @throws DataErrorException
+     */
+
     private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, String chessGame) throws DataErrorException{
         try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
-
             if(gameID >= 0)
                 stmt.setInt(1, gameID);
             if(whiteUsername != null)
@@ -51,6 +71,12 @@ public class MySqlGameDAO implements GameDAO{
         }
     }
 
+
+    /**
+     * Lists all games in the database
+     * @return
+     * @throws DataErrorException
+     */
     @Override
     public Collection<GameData> listGames() throws DataErrorException {
         Collection<GameData> games = new ArrayList<GameData>();
@@ -64,6 +90,7 @@ public class MySqlGameDAO implements GameDAO{
                 var blackUsername = rs.getString("blackUsername");
                 var gameName = rs.getString("gameName");
                 var game = rs.getString("game");
+                // serializing stuff
                 Gson gson = new Gson();
                 ChessGame gameObj = gson.fromJson(game, ChessGame.class);
                 games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, gameObj));
@@ -74,6 +101,12 @@ public class MySqlGameDAO implements GameDAO{
         }
     }
 
+
+    /**
+     * Joins a game
+     * @param game
+     * @throws DataErrorException
+     */
     @Override
     public void joinGame(GameData game) throws DataErrorException {
         var statement = "UPDATE Games SET blackUsername = ?, whiteUsername = ? WHERE gameID = ?";
@@ -93,6 +126,11 @@ public class MySqlGameDAO implements GameDAO{
 
     }
 
+
+    /**
+     * Deletes a game
+     * @throws DataErrorException
+     */
     @Override
     public void deleteGame() throws DataErrorException {
         var statement = "TRUNCATE TABLE Games";
@@ -102,6 +140,13 @@ public class MySqlGameDAO implements GameDAO{
             throw new DataErrorException(500, "Error when deleting game");
         }
     }
+
+
+    /**
+     * Deletes a game by gameID
+     * @param gameName
+     * @throws DataErrorException
+     */
     @Override
     public boolean findGame(String gameName) throws DataErrorException {
         var statement = "SELECT * FROM Games WHERE gameName = ?";
@@ -114,6 +159,13 @@ public class MySqlGameDAO implements GameDAO{
         }
     }
 
+
+    /**
+     * Gets a game by gameID
+     * @param gameID
+     * @return
+     * @throws DataErrorException
+     */
     @Override
     public GameData getGame(int gameID) throws DataErrorException {
         var statement = "SELECT * FROM Games WHERE gameID = ?";
@@ -125,6 +177,8 @@ public class MySqlGameDAO implements GameDAO{
                 var blackUsername = rs.getString("blackUsername");
                 var gameName = rs.getString("gameName");
                 var game = rs.getString("game");
+
+                // serializing stuff
                 Gson gson = new Gson();
                 ChessGame gameObj = gson.fromJson(game, ChessGame.class);
                 return new GameData(gameID, whiteUsername, blackUsername, gameName, gameObj);
@@ -134,8 +188,6 @@ public class MySqlGameDAO implements GameDAO{
         }
         return null;
     }
-
-
 
 
 }
