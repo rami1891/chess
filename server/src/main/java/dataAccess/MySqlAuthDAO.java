@@ -9,6 +9,12 @@ public class MySqlAuthDAO implements AuthDAO{
     public MySqlAuthDAO() throws DataErrorException {
         configureDatabase();
     }
+
+    /**
+     * Creates a new auth token in the database
+     * @param auth
+     * @throws DataErrorException
+     */
     @Override
     public void createAuth(AuthData auth) throws DataErrorException {
         var statement = "INSERT INTO Auth (authToken, username) VALUES (?, ?)";
@@ -16,10 +22,16 @@ public class MySqlAuthDAO implements AuthDAO{
         var username = auth.getUsername();
         executeStatement(statement, authToken, username);
 
-
-
     }
 
+
+    /**
+     * Executes a statement
+     * @param statement
+     * @param authToken
+     * @param username
+     * @throws DataErrorException
+     */
     private void executeStatement(String statement, String authToken, String username) throws DataErrorException{
         try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
             if(authToken != null)
@@ -32,14 +44,24 @@ public class MySqlAuthDAO implements AuthDAO{
         }
     }
 
+
+
+    /**
+     * Deletes all auth tokens in the database
+     * @throws DataErrorException
+     */
     @Override
     public void deleteAuth() throws DataErrorException {
         var statement = "TRUNCATE TABLE Auth";
         executeStatement(statement, null, null);
-
-
     }
 
+
+    /**
+     * Deletes a specific auth token in the database
+     * @param authToken
+     * @throws DataErrorException
+     */
     @Override
     public void deleteMyAuth(String authToken) throws DataErrorException {
         if(findAuth(authToken) == false)
@@ -58,6 +80,14 @@ public class MySqlAuthDAO implements AuthDAO{
 
     }
 
+
+
+    /**
+     * Finds an auth token in the database
+     * @param authToken
+     * @return
+     * @throws DataErrorException
+     */
     @Override
     public boolean findAuth(String authToken) throws DataErrorException{
         var statement = "SELECT * FROM Auth WHERE authToken = ?";
@@ -70,6 +100,13 @@ public class MySqlAuthDAO implements AuthDAO{
         }
     }
 
+
+    /**
+     * Gets an auth token in the database
+     * @param authtoken
+     * @return
+     * @throws DataErrorException
+     */
     @Override
     public AuthData getAuth(String authtoken) throws DataErrorException {
         var statement = "SELECT * FROM Auth WHERE authToken = ?";
