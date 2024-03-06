@@ -76,7 +76,21 @@ public class MySqlGameDAO implements GameDAO{
 
     @Override
     public void joinGame(GameData game) throws DataErrorException {
-        var statement = "UPDATE Games SET blackUsername = ? whiteUsername = ? WHERE gameID = ?";
+        var statement = "UPDATE Games SET blackUsername = ?, whiteUsername = ? WHERE gameID = ?";
+        var gameID = game.getGameID();
+        if(getGame(gameID) == null) throw new DataErrorException(500, "Error: gameID is invalid");
+
+        var whiteUsername = game.getWhiteUsername();
+        var blackUsername = game.getBlackUsername();
+        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+            stmt.setString(1, blackUsername);
+            stmt.setString(2, whiteUsername);
+            stmt.setInt(3, gameID);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            throw new DataErrorException(500, "Error when executing statement: " + statement);
+        }
+
     }
 
     @Override
@@ -89,10 +103,10 @@ public class MySqlGameDAO implements GameDAO{
         }
     }
     @Override
-    public boolean findGame(String gameID) throws DataErrorException {
-        var statement = "SELECT * FROM Games WHERE gameID = ?";
+    public boolean findGame(String gameName) throws DataErrorException {
+        var statement = "SELECT * FROM Games WHERE gameName = ?";
         try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
-            stmt.setString(1, gameID);
+            stmt.setString(1, gameName);
             var rs = stmt.executeQuery();
             return rs.next();
         } catch (Exception e) {

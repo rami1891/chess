@@ -1,5 +1,6 @@
 package services;
 
+import chess.ChessGame;
 import dataAccess.*;
 import model.*;
 
@@ -192,7 +193,6 @@ public class GameService {
         gameDAO.createGame(game);
 
 
-
         CreateGameResult createGameResult = new CreateGameResult(game.getGameID());
         return createGameResult;
 
@@ -230,12 +230,22 @@ public class GameService {
         }
 
         if(request.getPlayerColor().equals("WHITE") && gameDAO.getGame(request.getGameID()).getWhiteUsername() == null){
-            gameDAO.getGame(request.getGameID()).setWhiteUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+            //GameData game = new GameData(request.getGameID(), null, null, null, null);
+            GameData game = gameDAO.getGame(request.getGameID());
+            //gameDAO.getGame(request.getGameID()).setWhiteUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+            game.setWhiteUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+            gameDAO.joinGame(game);
             JoinGameResult joinGameResult = new JoinGameResult(request.getAuthToken(), request.getGameID(), "white", null);
             return joinGameResult;
         }
         else if(request.getPlayerColor().equals("BLACK") && gameDAO.getGame(request.getGameID()).getBlackUsername() == null){
-            gameDAO.getGame(request.getGameID()).setBlackUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+            //GameData game = new GameData(request.getGameID(), null, null, null, null);
+            GameData newGame = gameDAO.getGame(request.getGameID());
+            newGame.setBlackUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+            //gameDAO.getGame(request.getGameID()).setBlackUsername(authDAO.getAuth(request.getAuthToken()).getUsername());
+
+
+            gameDAO.joinGame(newGame);
             JoinGameResult joinGameResult = new JoinGameResult(request.getAuthToken(), request.getGameID(), "black", null);
             return joinGameResult;
         }
