@@ -10,6 +10,13 @@ public class MySqlUserDAO implements UserDAO{
     public MySqlUserDAO() throws DataErrorException{
         configureDatabase();
     }
+
+
+    /**
+     * Creates a new user in the database
+     * @param user
+     * @throws DataErrorException
+     */
     @Override
     public void createUser(UserData user) throws DataErrorException {
         var statement = "INSERT INTO Users (username, password, email) VALUES (?, ?, ?)";
@@ -22,6 +29,15 @@ public class MySqlUserDAO implements UserDAO{
 
     }
 
+
+    /**
+     * Executes a statement
+     * @param statement
+     * @param username
+     * @param password
+     * @param email
+     * @throws DataErrorException
+     */
     private void executeStatement(String statement, String username, String password, String email) throws DataErrorException{
         try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
             if(username != null)
@@ -38,6 +54,13 @@ public class MySqlUserDAO implements UserDAO{
     }
 
 
+
+    /**
+     * Reads a user from the database
+     * @param username
+     * @return
+     * @throws DataErrorException
+     */
     @Override
     public UserData readUser(String username) throws DataErrorException {
         var statement = "SELECT * FROM Users WHERE username = ?";
@@ -55,6 +78,13 @@ public class MySqlUserDAO implements UserDAO{
         }
         return null;
     }
+
+
+    /**
+     * Deletes a user from the database
+     * @param username
+     * @throws DataErrorException
+     */
     @Override
     public void deleteUser() throws DataErrorException {
         var statement = "TRUNCATE TABLE Users";
@@ -64,8 +94,13 @@ public class MySqlUserDAO implements UserDAO{
             throw new DataErrorException(500, e.getMessage());
         }
 
-
     }
+
+    /**
+     * Updates a user in the database
+     * @param username
+     * @throws DataErrorException
+     */
     @Override
     public boolean findUser(String username) throws DataErrorException {
         var statement = "SELECT * FROM Users WHERE username = ?";
