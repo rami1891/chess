@@ -36,8 +36,8 @@ public class ChessClient {
                 case "logout" -> logout();
                 case "listgames" -> listGames(params);
                 case "creategame" -> createGame(params);
-//                case "joingame" -> joinGame(params);
-//                case "joinobserver" -> joinObserver(params);
+                case "joingame" -> joinGame(params);
+                case "joinobserver" -> joinObserver(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -60,7 +60,7 @@ public class ChessClient {
                     - Logout: logout
                     - List Games: listgames
                     - Create Game: creategame <gameName>
-                    - Join Game: joingame <gameID>
+                    - Join Game: joingame <gameID> <playerColor: Black/White>
                     - Join Observer: joinobserver <gameID>
                     - Quit: quit
                     """;
@@ -125,6 +125,38 @@ public class ChessClient {
         try {
             var games = server.listGames();
             return "Success: " + games;
+        } catch (ResponseException e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    public String joinObserver(String[] params) throws ResponseException {
+        try {
+            if (params.length != 1) {
+                return "Error: bad request";
+            }
+            var gameIDString = params[0];
+            var gameID = Integer.parseInt(gameIDString);
+            server.joinObserver(gameID);
+            return "Success: joined observer";
+        } catch (ResponseException e) {
+            return "Error: " + e.getMessage();
+        }
+    }
+
+    public String joinGame(String[] params) throws ResponseException {
+        try {
+            if (params.length != 2) {
+                return "Error: bad request";
+            }
+            var gameIDString = params[0];
+            var gameID = Integer.parseInt(gameIDString);
+            var playerColor = params[1];
+//            if(!playerColor.equals("BLACK") && !playerColor.equals("WHITE")){
+//                return "Error: bad request, playerColor must be BLACK or WHITE";
+//            }
+            server.joinGame(gameID, playerColor);
+            return "Success: joined game";
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();
         }

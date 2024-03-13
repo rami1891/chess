@@ -1,14 +1,8 @@
 package ui;
 
 import exception.ResponseException;
-import model.requests.CreateGameRequest;
-import model.requests.ListGamesRequest;
-import model.requests.LoginRequest;
-import model.requests.RegisterRequest;
-import model.results.CreateGameResult;
-import model.results.ListGamesResult;
-import model.results.LoginResult;
-import model.results.RegisterResult;
+import model.requests.*;
+import model.results.*;
 import server.Server;
 import com.google.gson.Gson;
 //import exception.ResponseException;
@@ -58,6 +52,17 @@ public class ServerFacade {
         var path = "/game";
         ListGamesResult result = this.makeRequest("GET", path, new ListGamesRequest(authToken), ListGamesResult.class);
         return result.getGames();
+    }
+
+    public void joinObserver(int gameId) throws ResponseException {
+        var path = "/game";
+        this.makeRequest("PUT", path, new JoinGameRequest(null, authToken, gameId), JoinGameResult.class);
+    }
+
+    public void joinGame(int gameId, String playerColor) throws ResponseException {
+        var path = "/game";
+        this.makeRequest("PUT", path, new JoinGameRequest(playerColor, authToken, gameId), JoinGameResult.class);
+
     }
 
 
