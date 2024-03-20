@@ -2,8 +2,10 @@ package ui;
 
 import java.util.Arrays;
 
+import com.google.gson.Gson;
 import exception.ResponseException;
 import model.*;
+
 
 
 public class ChessClient {
@@ -27,7 +29,7 @@ public class ChessClient {
                     case "help" -> help();
                     case "register" -> register(params);
                     case "login" -> login(params);
-                    case "quit" -> "quit";
+                    case "quit" -> quit();
                     default -> help();
                 };
             }
@@ -38,7 +40,7 @@ public class ChessClient {
                 case "creategame" -> createGame(params);
                 case "joingame" -> joinGame(params);
                 case "joinobserver" -> joinObserver(params);
-                case "quit" -> "quit";
+                case "quit" -> quit();
                 default -> help();
             };
         } catch (Exception e) {
@@ -67,10 +69,17 @@ public class ChessClient {
         }
     }
 
+    public String quit() {
+        System.out.print("Goodbye!");
+        System.exit(0);
+        return "Goodbye!";
+        //return "Goodbye!";
+    }
+
     public String register(String[] params) throws ResponseException {
         try {
             if (params.length != 3) {
-                return "Error: bad request";
+                return "Error: Usage: register <username> <password> <email>";
             }
             var username = params[0];
             var password = params[1];
@@ -86,7 +95,7 @@ public class ChessClient {
     public String login(String[] params) throws ResponseException {
         try {
             if (params.length != 2) {
-                return "Error: bad request";
+                return "Error: Usage: login <username> <password>";
             }
             var username = params[0];
             var password = params[1];
@@ -111,7 +120,7 @@ public class ChessClient {
     public String createGame(String[] params) throws ResponseException {
         try {
             if (params.length != 1) {
-                return "Error: bad request";
+                return "Error: Usage: creategame <gameName>";
             }
             var gameName = params[0];
             server.createGame(gameName);
@@ -124,7 +133,12 @@ public class ChessClient {
     public String listGames(String[] params) throws ResponseException {
         try {
             var games = server.listGames();
-            return "Success: " + games;
+            var result = new StringBuilder();
+            var gson = new Gson();
+            for (var game : games) {
+                result.append(gson.toJson(game)).append("\n");
+            }
+            return "Success: " + result.toString();
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();
         }
@@ -152,9 +166,7 @@ public class ChessClient {
             var gameIDString = params[0];
             var gameID = Integer.parseInt(gameIDString);
             var playerColor = params[1];
-//            if(!playerColor.equals("BLACK") && !playerColor.equals("WHITE")){
-//                return "Error: bad request, playerColor must be BLACK or WHITE";
-//            }
+            playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);
             return "Success: joined game";
         } catch (ResponseException e) {

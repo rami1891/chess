@@ -12,6 +12,7 @@ import java.net.*;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -66,11 +67,6 @@ public class ServerFacade {
     }
 
 
-
-
-
-
-
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
@@ -80,9 +76,13 @@ public class ServerFacade {
             if (authToken != null) {
                 http.setRequestProperty("Authorization", authToken);
             }
-            http.setDoOutput(true);
 
-            writeBody(request, http);
+            if(Objects.equals(method, "GET")){
+                http.setDoOutput(false);
+            } else {
+                http.setDoOutput(true);
+                writeBody(request, http);
+            }
             http.connect();
             throwIfNotSuccessful(http);
             return readBody(http, responseClass);

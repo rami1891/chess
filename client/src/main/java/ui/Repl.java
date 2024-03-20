@@ -40,6 +40,15 @@ public class Repl {
         System.out.print("\n" + ">>> ");
     }
 
+//    public static void printBoard(String color){
+//        if (color.equals("white")){
+//
+//        }
+//        else{
+//
+//        }
+//    }
+
 
 
     public static void main(String[] args) {
