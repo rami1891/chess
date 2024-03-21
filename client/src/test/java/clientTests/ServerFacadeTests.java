@@ -91,20 +91,6 @@ public class ServerFacadeTests {
     }
 
     @Test
-    public void testListGamesPositive() throws ResponseException {
-        facade.register("user1", "password", "email");
-        facade.login("user1", "password");
-        facade.createGame("game1");
-        Assertions.assertNotNull(facade.listGames());
-    }
-
-    @Test
-    public void testListGamesNegative() throws ResponseException {
-        Assertions.assertThrows(ResponseException.class, () -> facade.listGames());
-    }
-
-
-    @Test
     public void testJoinGamePositive() throws ResponseException, DataErrorException {
         facade.register("user1", "password", "email");
         facade.login("user1", "password");
@@ -150,6 +136,19 @@ public class ServerFacadeTests {
         facade.login("user1", "password");
         facade.createGame("game1");
         Assertions.assertThrows(ResponseException.class, () -> facade.joinObserver(1));
+    }
+
+    @Test
+    public void testListGamesPositive() throws ResponseException {
+        facade.register("user1", "password", "email");
+        facade.login("user1", "password");
+        facade.createGame("game1");
+        Assertions.assertNotNull(facade.listGames());
+    }
+
+    @Test
+    public void testListGamesNegative() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> facade.listGames());
     }
 
 
