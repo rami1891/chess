@@ -1,9 +1,15 @@
 package clientTests;
 
+import dataAccess.DataErrorException;
+import dataAccess.GameDAO;
+import dataAccess.MySqlGameDAO;
 import exception.ResponseException;
+import model.GameData;
 import org.junit.jupiter.api.*;
 import server.Server;
 import ui.ServerFacade;
+
+import java.util.Collection;
 
 
 public class ServerFacadeTests {
@@ -82,6 +88,47 @@ public class ServerFacadeTests {
         facade.login("user1", "password");
         facade.createGame("game1");
         Assertions.assertThrows(ResponseException.class, () -> facade.createGame("game1"));
+    }
+
+    @Test
+    public void testListGamesPositive() throws ResponseException {
+        facade.register("user1", "password", "email");
+        facade.login("user1", "password");
+        facade.createGame("game1");
+        Assertions.assertNotNull(facade.listGames());
+    }
+
+    @Test
+    public void testListGamesNegative() throws ResponseException {
+        Assertions.assertThrows(ResponseException.class, () -> facade.listGames());
+    }
+
+
+    @Test
+    public void testJoinGamePositive() throws ResponseException, DataErrorException {
+        facade.register("user1", "password", "email");
+        facade.login("user1", "password");
+        facade.createGame("game1");
+        Collection<GameData> games = facade.listGames();
+        if(games.contains("game1")){
+            for(GameData game : games){
+                if(game.getGameName().equals("game1")){
+                    int gameId = game.getGameID();
+                    Assertions.assertDoesNotThrow(() -> facade.joinGame(gameId, "white"));
+                }
+            }
+        }
+
+
+
+    }
+
+    @Test
+    public void testJoinGameNegative() throws ResponseException {
+        facade.register("user1", "password", "email");
+        facade.login("user1", "password");
+        facade.createGame("game1");
+        Assertions.assertThrows(ResponseException.class, () -> facade.joinGame(1, "white"));
     }
 
 

@@ -52,7 +52,8 @@ public class ServerFacade {
     public void createGame(String gameName) throws ResponseException {
         var path = "/game";
 
-        this.makeRequest("POST", path, new CreateGameRequest(gameName, authToken), CreateGameResult.class);
+       this.makeRequest("POST", path, new CreateGameRequest(gameName, authToken), CreateGameResult.class);
+
     }
 
     public Collection listGames() throws ResponseException {
