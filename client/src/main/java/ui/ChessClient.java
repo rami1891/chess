@@ -4,11 +4,16 @@ import java.util.Arrays;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
+
+
+
+
 import model.*;
 
 
 
 public class ChessClient {
+    private ChessBoard board;
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.PreLogin;
@@ -16,6 +21,9 @@ public class ChessClient {
     public ChessClient(String serverUrl) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
+        this.board = new ChessBoard();
+
+
     }
 
 
@@ -69,7 +77,7 @@ public class ChessClient {
         }
     }
 
-    public String quit() {
+    public String quit() throws ResponseException {
         System.out.print("Goodbye!");
         System.exit(0);
         return "Goodbye!";
@@ -152,6 +160,8 @@ public class ChessClient {
             var gameIDString = params[0];
             var gameID = Integer.parseInt(gameIDString);
             server.joinObserver(gameID);
+            board.setup();
+
             return "Success: joined observer";
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();
@@ -168,6 +178,7 @@ public class ChessClient {
             var playerColor = params[1];
             playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);
+            board.setup();
             return "Success: joined game";
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();

@@ -2,9 +2,6 @@ package ui;
 
 import java.util.Scanner;
 
-import static java.awt.Color.GREEN;
-import static ui.EscapeSequences.*;
-
 
 public class Repl {
     private final ChessClient client;
@@ -14,9 +11,14 @@ public class Repl {
     }
 
 
+
+
     public void run(){
         System.out.println("Welcome to Chess!");
         System.out.print(client.help());
+
+
+
 
         Scanner scanner = new Scanner(System.in);
         var result = "";
@@ -39,17 +41,6 @@ public class Repl {
     private void printPrompt() {
         System.out.print("\n" + ">>> ");
     }
-
-//    public static void printBoard(String color){
-//        if (color.equals("white")){
-//
-//        }
-//        else{
-//
-//        }
-//    }
-
-
 
     public static void main(String[] args) {
         var serverUrl = "http://localhost:8080";

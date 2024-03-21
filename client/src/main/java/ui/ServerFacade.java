@@ -22,6 +22,12 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
+    public String clear() throws ResponseException {
+        var path = "/db";
+        return this.makeRequest("DELETE", path, null, null);
+
+    }
+
     public void register(String username, String password, String email) throws ResponseException {
         var path = "/user";
         RegisterResult result = this.makeRequest("POST", path, new RegisterRequest(username, password, email), RegisterResult.class);
