@@ -20,6 +20,8 @@ public class ChessClient {
     private final String serverUrl;
     private State state = State.PreLogin;
 
+    private String OverPlayerColor;
+
     public ChessClient(String serverUrl) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
@@ -43,7 +45,7 @@ public class ChessClient {
                     default -> help();
                 };
             }
-            else return switch (cmd) {
+            else if(state == State.PostLogin) return switch (cmd) {
                 case "help" -> help();
                 case "logout" -> logout();
                 case "listgames" -> listGames(params);
@@ -53,6 +55,17 @@ public class ChessClient {
                 case "quit" -> quit();
                 default -> help();
             };
+
+            else return switch (cmd){
+                case "help" -> help();
+//                case "leave" -> leaveGame();
+                case "redraw" -> redraw();
+//                case "move" -> move(params);
+//                case "resign" -> resign();
+//                case "legalMoves" -> legalMoves(params);
+                };
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -67,7 +80,7 @@ public class ChessClient {
                     - Quit: quit
                     """;
         }
-        else{
+        else if (state == State.PostLogin){
             return """
                     - Logout: logout
                     - List Games: listgames
@@ -75,6 +88,16 @@ public class ChessClient {
                     - Join Game: joingame <gameID> <playerColor: Black/White>
                     - Join Observer: joinobserver <gameID>
                     - Quit: quit
+                    """;
+        }
+        else{
+            return """
+                    - Help: help
+                    - Leave: leave
+                    - Redraw: redraw
+                    - Move: move <from> <to>
+                    - Resign: resign
+                    - Legal Moves: legalMoves <piece>
                     """;
         }
     }
@@ -175,6 +198,7 @@ public class ChessClient {
             }
             server.joinObserver(gameID);
             board.setup();
+            state = State.GamePlay;
 
             return "Success: joined observer";
         } catch (ResponseException e) {
@@ -206,9 +230,22 @@ public class ChessClient {
             playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);
             board.setup();
+            state = State.GamePlay;
+            OverPlayerColor = playerColor;
             return "Success: joined game";
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();
+        }
+    }
+
+    public String redraw() {
+        if (state == State.GamePlay) {
+            if(OverPlayerColor.equals("WHITE"))
+                //board.printChessBoardBlack();
+
+            return "Success: board redrawn";
+        } else {
+            return "Error: not in game";
         }
     }
 
