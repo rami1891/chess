@@ -91,6 +91,7 @@ public class ChessBoard {
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
 
+        out.print("\n");
 
     }
 
@@ -122,12 +123,9 @@ public class ChessBoard {
         rowBlack();
         out.print(SET_BG_COLOR_DARK_GREY);
         out.print(SET_TEXT_COLOR_WHITE);
-
+        out.print("\n");
 
     }
-
-
-
 
 
 }

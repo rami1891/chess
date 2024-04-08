@@ -1,6 +1,8 @@
 package ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 
 import com.google.gson.Gson;
 import exception.ResponseException;
@@ -81,7 +83,6 @@ public class ChessClient {
         System.out.print("Goodbye!");
         System.exit(0);
         return "Goodbye!";
-        //return "Goodbye!";
     }
 
     public String register(String[] params) throws ResponseException {
@@ -143,10 +144,12 @@ public class ChessClient {
             var games = server.listGames();
             var result = new StringBuilder();
             var gson = new Gson();
+            int index = 0;
             for (var game : games) {
-                result.append(gson.toJson(game)).append("\n");
+                result.append(index).append(gson.toJson(game)).append("\n");
+                index++;
             }
-            return "Success: " + result.toString();
+            return "Success: " + "\n" + result.toString();
         } catch (ResponseException e) {
             return "Error: " + e.getMessage();
         }
@@ -157,8 +160,19 @@ public class ChessClient {
             if (params.length != 1) {
                 return "Error: bad request";
             }
-            var gameIDString = params[0];
-            var gameID = Integer.parseInt(gameIDString);
+            var gameIdxString = params[0];
+            var gameIdx = Integer.parseInt(gameIdxString);
+
+            Collection games = server.listGames();
+            int index = 0;
+            int gameID = 0;
+            for (Object game : games) {
+                if (index == gameIdx) {
+                    gameID = ((GameData) game).getGameID();
+                    break;
+                }
+                index++;
+            }
             server.joinObserver(gameID);
             board.setup();
 
@@ -173,8 +187,21 @@ public class ChessClient {
             if (params.length != 2) {
                 return "Error: bad request";
             }
-            var gameIDString = params[0];
-            var gameID = Integer.parseInt(gameIDString);
+
+
+            var gameIdxString = params[0];
+            var gameIdx = Integer.parseInt(gameIdxString);
+
+            Collection games = server.listGames();
+            int index = 0;
+            int gameID = 0;
+            for (Object game : games) {
+                if (index == gameIdx) {
+                    gameID = ((GameData) game).getGameID();
+                    break;
+                }
+                index++;
+            }
             var playerColor = params[1];
             playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);

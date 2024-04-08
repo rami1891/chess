@@ -42,13 +42,13 @@ public class Repl {
         System.out.print("\n" + ">>> ");
     }
 
-    public static void main(String[] args) {
-        var serverUrl = "http://localhost:8080";
-        if (args.length > 0) {
-            serverUrl = args[0];
-        }
-        var repl = new Repl(serverUrl);
-        repl.run();
-    }
+//    public static void main(String[] args) {
+//        var serverUrl = "http://localhost:8080";
+//        if (args.length > 0) {
+//            serverUrl = args[0];
+//        }
+//        var repl = new Repl(serverUrl);
+//        repl.run();
+//    }
 
 }
