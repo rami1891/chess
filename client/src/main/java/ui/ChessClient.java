@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import com.google.gson.Gson;
+import dataAccess.GameDAO;
 import exception.ResponseException;
 
 
@@ -21,11 +22,13 @@ public class ChessClient {
     private State state = State.PreLogin;
 
     private String OverPlayerColor;
+    private GameData myGame;
 
     public ChessClient(String serverUrl) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
         this.board = new ChessBoard();
+
 
 
     }
@@ -187,21 +190,27 @@ public class ChessClient {
             var gameIdx = Integer.parseInt(gameIdxString);
 
             Collection games = server.listGames();
+            if(gameIdx >= games.size() || gameIdx < 0){
+                return "Error: bad request";
+            }
             int index = 0;
             int gameID = 0;
             for (Object game : games) {
                 if (index == gameIdx) {
                     gameID = ((GameData) game).getGameID();
+                    myGame = (GameData) game;
                     break;
                 }
                 index++;
             }
+
             server.joinObserver(gameID);
-            board.setup();
+            board.setup("ANY");
             state = State.GamePlay;
 
             return "Success: joined observer";
         } catch (ResponseException e) {
+            myGame = null;
             return "Error: " + e.getMessage();
         }
     }
@@ -216,36 +225,48 @@ public class ChessClient {
             var gameIdxString = params[0];
             var gameIdx = Integer.parseInt(gameIdxString);
 
+
             Collection games = server.listGames();
+            if(gameIdx >= games.size() || gameIdx < 0){
+                return "Error: bad request";
+            }
+
+
             int index = 0;
             int gameID = 0;
             for (Object game : games) {
                 if (index == gameIdx) {
                     gameID = ((GameData) game).getGameID();
+                    myGame = (GameData) game;
                     break;
                 }
                 index++;
             }
+
+
             var playerColor = params[1];
             playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);
-            board.setup();
+
+
+            board.setup("ANY");
             state = State.GamePlay;
             OverPlayerColor = playerColor;
             return "Success: joined game";
         } catch (ResponseException e) {
+            myGame = null;
             return "Error: " + e.getMessage();
         }
     }
 
     public String redraw() {
-        if (state == State.GamePlay) {
-            if(OverPlayerColor.equals("WHITE"))
-                //board.printChessBoardBlack();
+        if(OverPlayerColor.equals("WHITE")){
+            //ChessBoard board = myGame.getGame().getBoard();
+            board.setup("WHITE");
 
-            return "Success: board redrawn";
+            return "Success: board redrawn White";
         } else {
-            return "Error: not in game";
+            return "Success: board redrawn Black";
         }
     }
 

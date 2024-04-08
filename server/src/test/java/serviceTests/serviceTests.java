@@ -1,5 +1,6 @@
 package serviceTests;
 
+import dataAccess.*;
 import model.requests.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,8 +8,19 @@ import services.GameService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class serviceTests {
-    static final GameService gameService = new GameService();
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
+    static GameService gameService = null;
+
+    public serviceTests() {
+        UserDAO userDAO = new UserDAOMem();
+        AuthDAO authDAO = new AuthDAOMem();
+        GameDAO gameDAO = new GameDAOMem();
+        gameService = new GameService(userDAO, authDAO, gameDAO);
+    }
 
 
     @BeforeEach

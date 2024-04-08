@@ -11,6 +11,7 @@ import model.results.JoinGameResult;
 import model.results.LoginResult;
 import model.results.RegisterResult;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import server.webSockets.WebSocketHandler;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -23,14 +24,11 @@ public class GameService {
     AuthDAO authDAO;
     GameDAO gameDAO;
 
-    public GameService() {
-        try{
-            userDAO = new MySqlUserDAO();
-            authDAO = new MySqlAuthDAO();
-            gameDAO = new MySqlGameDAO();
-        } catch (DataErrorException e) {
-            throw new RuntimeException(e);
-        }
+    public GameService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO) {
+            this.userDAO = userDAO;
+            this.authDAO = authDAO;
+            this.gameDAO = gameDAO;
+
     }
 
 

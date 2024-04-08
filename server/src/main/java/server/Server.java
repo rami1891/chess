@@ -1,19 +1,34 @@
 package server;
 
+import dataAccess.*;
 import model.requests.*;
 import model.results.*;
+import server.webSockets.WebSocketHandler;
 import spark.*;
 import services.GameService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import dataAccess.DataAccessException;
-import dataAccess.DataErrorException;
 
 public class Server {
+    private UserDAO userDAO;
+    private AuthDAO authDAO;
+    private GameDAO gameDAO;
+    private WebSocketHandler webSocketHandler;
 
     private final GameService gameService;
-    public Server(){
-        this.gameService = new GameService();
+    public Server() {
+        try {
+            userDAO = new MySqlUserDAO();
+            authDAO = new MySqlAuthDAO();
+            gameDAO = new MySqlGameDAO();
+            this.gameService = new GameService(userDAO, authDAO, gameDAO);
+             webSocketHandler = new WebSocketHandler(gameDAO, authDAO, userDAO);
+        }
+        catch (DataErrorException e){
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+
+
     }
 
     /**
@@ -25,6 +40,8 @@ public class Server {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+        Spark.webSocket("/connect", webSocketHandler);
+        Spark.init();
 
         Spark.delete("/db", this::clear);
         Spark.post("/user", this::register);
