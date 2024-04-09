@@ -21,6 +21,9 @@ public class GameData {
 
     public GameData(String gameName) {
         this.gameName = gameName;
+        this.game = new ChessGame();
+
+
 
     }
 

@@ -8,6 +8,7 @@ import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import webSocketMessages.serverMessages.Error;
 import webSocketMessages.serverMessages.LoadGameMessage;
 import webSocketMessages.serverMessages.Notification;
 import webSocketMessages.userCommands.JoinObserverCmd;
@@ -55,23 +56,7 @@ public class WebSocketHandler {
 
         }
     }
-    private void playerColorCheck(JoinPlayerCmd command, Session session){
-        if(command.getPlayerColor() == ChessGame.TeamColor.BLACK){
-            Notification notification = new Notification("Player joined game as black");
-            try {
-                connections.broadcast(command.getAuthString(), notification);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Notification notification = new Notification("Player joined game as white");
-            try {
-                connections.broadcast(command.getAuthString(), notification);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+
 
     private void joinGame(JoinPlayerCmd command, Session session) throws IOException {
         connections.add(command.getAuthString(), session);
@@ -79,16 +64,43 @@ public class WebSocketHandler {
             if(authDao.findAuth(command.getAuthString())){
                 GameData game = gameDao.getGame(command.getGameID());
 
-                LoadGameMessage message = new LoadGameMessage(game.getGame());
-                session.getRemote().sendString(new Gson().toJson(message));
-                Notification notification = new Notification("Player joined game");
-                connections.broadcast(command.getAuthString(), notification);
+                if(command.getPlayerColor() == null){
+                    Error error = new Error("Player color not specified");
+                    session.getRemote().sendString(new Gson().toJson(error));
+                }
+
+                else if(((command.getPlayerColor().equals("WHITE")) && game.getWhiteUsername() == null) || !(authDao.getAuth(command.getAuthString()).getUsername().equals(game.getWhiteUsername()))){
+                    Error error = new Error("Player color not specified");
+                    session.getRemote().sendString(new Gson().toJson(error));
+                }
+                else if(((command.getPlayerColor().equals("BLACK")) && game.getBlackUsername() == null) || !(authDao.getAuth(command.getAuthString()).getUsername().equals(game.getBlackUsername()))){
+                    Error error = new Error("Player color not specified");
+                    session.getRemote().sendString(new Gson().toJson(error));
+                }
+
+                else if(command.getPlayerColor().equals("WHITE")){
+                    game.setWhiteUsername(command.getAuthString());
+                    LoadGameMessage message = new LoadGameMessage(game.getGame());
+                    session.getRemote().sendString(new Gson().toJson(message));
+                    Notification notification = new Notification("Player joined game");
+                    connections.broadcast(command.getAuthString(), notification);
+
+                }
+                else{
+                    game.setBlackUsername(command.getAuthString());
+                    LoadGameMessage message = new LoadGameMessage(game.getGame());
+                    session.getRemote().sendString(new Gson().toJson(message));
+                    Notification notification = new Notification("Player joined game");
+                    connections.broadcast(command.getAuthString(), notification);
+
+                }
 
             }
-        } catch (DataErrorException e ) {
-            String error = new Gson().toJson(new Error(e.getMessage()));
-            session.getRemote().sendString(error);
-        } catch (DataAccessException e) {
+            else{
+                Error error = new Error("Invalid auth token");
+                session.getRemote().sendString(new Gson().toJson(error));
+            }
+        } catch (DataErrorException | DataAccessException  | IOException e) {
             String error = new Gson().toJson(new Error(e.getMessage()));
             session.getRemote().sendString(error);
         }
@@ -105,6 +117,10 @@ public class WebSocketHandler {
                 Notification notification = new Notification("Observer joined game");
                 connections.broadcast(command.getAuthString(), notification);
 
+            }
+            else{
+                Error error = new Error("Invalid auth token");
+                session.getRemote().sendString(new Gson().toJson(error));
             }
         } catch (DataErrorException e ) {
             String error = new Gson().toJson(new Error(e.getMessage()));
