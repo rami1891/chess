@@ -114,7 +114,6 @@ public class WebSocketHandler {
         try{
             if(authDao.findAuth(command.getAuthString()) && (gameDao.getGame(command.getGameID()) != null)){
                 GameData game = gameDao.getGame(command.getGameID());
-                game.addObservers(authDao.getAuth(command.getAuthString()).getUsername());
                 LoadGameMessage message = new LoadGameMessage(game.getGame());
                 session.getRemote().sendString(new Gson().toJson(message));
                 Notification notification = new Notification("Observer joined game");
