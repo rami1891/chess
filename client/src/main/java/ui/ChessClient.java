@@ -66,6 +66,7 @@ public class ChessClient {
                 case "resign" -> resign();
                 case "legalMoves" -> legalMoves(params);
                 case "quit" -> quit();
+                default -> help();
                 };
 
 
