@@ -14,7 +14,7 @@ public class ChessBoard {
         out = new PrintStream(System.out, true, StandardCharsets.UTF_8);
     }
 
-    public void setup(String PlayerColor){
+    public void setup(String playerColor){
         out.print(ERASE_SCREEN);
         String[][] board = new String[8][8];
         String afterSpacing = "\u2001\u2005";
@@ -27,11 +27,11 @@ public class ChessBoard {
         board[6] = new String[]{beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing, beforeSpacing+"P"+afterSpacing};
         board[7] = new String[]{beforeSpacing+"R"+afterSpacing, beforeSpacing+"N"+afterSpacing, beforeSpacing+"B"+afterSpacing, beforeSpacing+"Q"+afterSpacing, beforeSpacing+"K"+afterSpacing, beforeSpacing+"B"+afterSpacing, beforeSpacing+"N"+afterSpacing, beforeSpacing+"R"+afterSpacing};
 
-        if (PlayerColor.equals("WHITE")){
+        if (playerColor.equals("WHITE")){
             printChessBoardWhite(board);
 
         }
-        else if (PlayerColor.equals("BLACK")){
+        else if (playerColor.equals("BLACK")){
             printChessBoardBlack(board);
         }
 
