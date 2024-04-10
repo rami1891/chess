@@ -3,7 +3,7 @@ package ui;
 import exception.ResponseException;
 import model.requests.*;
 import model.results.*;
-import server.Server;
+
 import com.google.gson.Gson;
 //import exception.ResponseException;
 
