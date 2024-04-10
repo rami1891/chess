@@ -65,6 +65,7 @@ public class ChessClient {
                 case "move" -> move(params);
                 case "resign" -> resign();
                 case "legalMoves" -> legalMoves(params);
+                case "quit" -> quit();
                 };
 
 
