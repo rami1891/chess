@@ -13,7 +13,7 @@ import static java.util.Objects.deepEquals;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard<GameDao> {
     private ChessPiece[][] board;
 
     public ChessBoard() {
@@ -36,6 +36,8 @@ public class ChessBoard {
         // Check if the provided position is within the valid range
         if (row >= 0 && row < 8 && col >= 0 && col < 8) {
             board[row][col] = piece;
+
+
         } else {
             // Handle invalid position (throw an exception, print an error, etc.)
             throw new IllegalArgumentException("Invalid position: " + position);

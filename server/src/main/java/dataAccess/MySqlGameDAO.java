@@ -4,16 +4,18 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import model.GameData;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import static dataAccess.DatabaseManager.configureDatabase;
 import static java.sql.Types.NULL;
 
-public class MySqlGameDAO implements GameDAO{
+public class MySqlGameDAO implements GameDAO {
 
     /**
      * Constructor
+     *
      * @throws DataErrorException
      */
     public MySqlGameDAO() throws DataErrorException {
@@ -22,6 +24,7 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Creates a new game in the database
+     *
      * @param game
      * @throws DataErrorException
      */
@@ -33,16 +36,17 @@ public class MySqlGameDAO implements GameDAO{
         var whiteUsername = game.getWhiteUsername();
         var blackUsername = game.getBlackUsername();
         // serializing stuff
-         ChessGame chessGame = game.getGame();
-         Gson chess = new Gson();
-         String chessGameObj = chess.toJson(chessGame);
+        ChessGame chessGame = game.getGame();
+        Gson chess = new Gson();
+        String chessGameObj = chess.toJson(chessGame);
 
-         // execute statement
+        // execute statement
         executeStatement(statement, gameID, whiteUsername, blackUsername, gameName, chessGameObj);
     }
 
     /**
      * Executes a statement
+     *
      * @param statement
      * @param gameID
      * @param whiteUsername
@@ -51,20 +55,20 @@ public class MySqlGameDAO implements GameDAO{
      * @param chessGame
      * @throws DataErrorException
      */
-    private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, String chessGame) throws DataErrorException{
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
-            if(gameID >= 0)
+    private void executeStatement(String statement, int gameID, String whiteUsername, String blackUsername, String gameName, String chessGame) throws DataErrorException {
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
+            if (gameID >= 0)
                 stmt.setInt(1, gameID);
-            if(whiteUsername != null)
+            if (whiteUsername != null)
                 stmt.setString(2, whiteUsername);
             else stmt.setNull(2, NULL);
-            if(blackUsername != null)
+            if (blackUsername != null)
                 stmt.setString(3, blackUsername);
             else stmt.setNull(3, NULL);
-            if(gameName != null)
+            if (gameName != null)
                 stmt.setString(4, gameName);
             else stmt.setNull(4, NULL);
-            if(chessGame != null)
+            if (chessGame != null)
                 stmt.setString(5, chessGame);
             else stmt.setNull(5, NULL);
             stmt.executeUpdate();
@@ -76,6 +80,7 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Lists all games in the database
+     *
      * @return
      * @throws DataErrorException
      */
@@ -83,7 +88,7 @@ public class MySqlGameDAO implements GameDAO{
     public Collection<GameData> listGames() throws DataErrorException {
         Collection<GameData> games = new ArrayList<GameData>();
         var statement = "SELECT * FROM Games";
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
 
             var rs = stmt.executeQuery();
             while (rs.next()) {
@@ -106,6 +111,7 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Joins a game
+     *
      * @param game
      * @throws DataErrorException
      */
@@ -115,11 +121,11 @@ public class MySqlGameDAO implements GameDAO{
         var gameID = game.getGameID();
 
         // check if gameID is valid, this is a double check to make sure the game exists
-        if(getGame(gameID) == null) throw new DataErrorException(500, "Error: gameID is invalid");
+        if (getGame(gameID) == null) throw new DataErrorException(500, "Error: gameID is invalid");
 
         var whiteUsername = game.getWhiteUsername();
         var blackUsername = game.getBlackUsername();
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
             stmt.setString(1, blackUsername);
             stmt.setString(2, whiteUsername);
             stmt.setInt(3, gameID);
@@ -133,12 +139,13 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Deletes a game
+     *
      * @throws DataErrorException
      */
     @Override
     public void deleteGame() throws DataErrorException {
         var statement = "TRUNCATE TABLE Games";
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
             stmt.executeUpdate();
         } catch (Exception e) {
             throw new DataErrorException(500, "Error when deleting game");
@@ -148,13 +155,14 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Deletes a game by gameID
+     *
      * @param gameName
      * @throws DataErrorException
      */
     @Override
     public boolean findGame(String gameName) throws DataErrorException {
         var statement = "SELECT * FROM Games WHERE gameName = ?";
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
             stmt.setString(1, gameName);
             var rs = stmt.executeQuery();
             return rs.next();
@@ -166,6 +174,7 @@ public class MySqlGameDAO implements GameDAO{
 
     /**
      * Gets a game by gameID
+     *
      * @param gameID
      * @return
      * @throws DataErrorException
@@ -173,7 +182,7 @@ public class MySqlGameDAO implements GameDAO{
     @Override
     public GameData getGame(int gameID) throws DataErrorException {
         var statement = "SELECT * FROM Games WHERE gameID = ?";
-        try(var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)){
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
             stmt.setInt(1, gameID);
             var rs = stmt.executeQuery();
             if (rs.next()) {
@@ -193,5 +202,35 @@ public class MySqlGameDAO implements GameDAO{
         return null;
     }
 
+    @Override
+    public void gameOverride(GameData game) throws DataErrorException {
+        var statement = "UPDATE Games SET whiteUsername = ?, blackUsername = ?, game = ? WHERE gameID = ?";
+        var gameID = game.getGameID();
+        var gameName = game.getGameName();
+        var whiteUsername = game.getWhiteUsername();
+        var blackUsername = game.getBlackUsername();
+        // serializing stuff
+        Gson gson = new Gson();
+        String gameObj = gson.toJson(game.getGame());
 
+        // execute statement
+        try (var conn = DatabaseManager.getConnection(); var stmt = conn.prepareStatement(statement)) {
+            if (gameID >= 0)
+                stmt.setInt(4, gameID);
+            if (whiteUsername != null)
+                stmt.setString(1, whiteUsername);
+            else stmt.setNull(1, NULL);
+            if (blackUsername != null)
+                stmt.setString(2, blackUsername);
+            else stmt.setNull(2, NULL);
+            if (gameObj != null)
+                stmt.setString(3, gameObj);
+            else stmt.setNull(3, NULL);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+    }
 }

@@ -52,4 +52,7 @@ public interface GameDAO {
      */
     public GameData getGame(int gameID) throws DataAccessException, DataErrorException;
 
-}
+
+    public void gameOverride(GameData game) throws DataErrorException;
+
+    }

@@ -83,5 +83,17 @@ public class GameDAOMem implements GameDAO{
         return null;
     }
 
+    @Override
+    public void gameOverride(GameData game) throws DataErrorException {
+        for(GameData g : gameData){
+            if(g.getGameID() == game.getGameID()){
+                gameData.remove(g);
+                gameData.add(game);
+                return;
+            }
+        }
+        throw new DataErrorException(500, "Error: gameID is invalid");
+    }
+
 
 }

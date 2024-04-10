@@ -15,6 +15,7 @@ public class ChessGame {
 
     public ChessGame() {
         this.board = new ChessBoard();
+        board.resetBoard();
         this.teamTurn = TeamColor.WHITE;
 
     }
@@ -124,6 +125,7 @@ public class ChessGame {
                 // Check if the move is a pawn promotion
                 if(move.getEndPosition().getRow() == 1 || move.getEndPosition().getRow() == 8) {
                     board.addPiece(move.getEndPosition(), new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece()));
+
                 }
                 else {
                     board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));

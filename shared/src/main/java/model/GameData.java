@@ -3,6 +3,8 @@ import chess.ChessGame;
 
 import chess.ChessGame;
 
+import java.util.ArrayList;
+
 public class GameData {
 
     private int gameID;
@@ -10,6 +12,8 @@ public class GameData {
     private String blackUsername;
     private String gameName;
     private ChessGame game;
+    private ArrayList<String> observers;
+    private boolean isGameOver;
 
     public GameData(int gameID, String whiteUsername, String blackUsername, String gameName, ChessGame game) {
         this.gameID = gameID;
@@ -17,11 +21,13 @@ public class GameData {
         this.blackUsername = blackUsername;
         this.gameName = gameName;
         this.game = game;
+        this.observers = new ArrayList<>();
     }
 
     public GameData(String gameName) {
         this.gameName = gameName;
         this.game = new ChessGame();
+        this.observers = new ArrayList<>();
 
 
 
@@ -58,6 +64,31 @@ public class GameData {
 
     public void setBlackUsername(String blackUsername) {
         this.blackUsername = blackUsername;
+    }
+
+    public void setObservers(ArrayList<String> observers) {
+        this.observers = observers;
+    }
+
+    public ArrayList<String> getObservers() {
+        return observers;
+    }
+
+    public void addObservers(String observer) {
+        this.observers.add(observer);
+    }
+
+
+    public void removeObservers(String observer) {
+        this.observers.remove(observer);
+    }
+
+    public void setGameOver(boolean gameOver) {
+        isGameOver = gameOver;
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
     }
 
 
