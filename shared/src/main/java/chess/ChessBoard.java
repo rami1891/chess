@@ -13,7 +13,7 @@ import static java.util.Objects.deepEquals;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard<GameDao> {
+public class ChessBoard {
     private ChessPiece[][] board;
 
     public ChessBoard() {

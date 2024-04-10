@@ -20,7 +20,7 @@ public class ChessClient {
     private final String serverUrl;
     private State state = State.PreLogin;
 
-    private String OverPlayerColor;
+    private String overPlayerColor;
     private GameData myGame;
 
     public ChessClient(String serverUrl) {
@@ -252,7 +252,7 @@ public class ChessClient {
 
             board.setup("ANY");
             state = State.GamePlay;
-            OverPlayerColor = playerColor;
+            overPlayerColor = playerColor;
             return "Success: joined game";
         } catch (ResponseException e) {
             myGame = null;
@@ -261,7 +261,7 @@ public class ChessClient {
     }
 
     public String redraw() {
-        if(OverPlayerColor.equals("WHITE")){
+        if(overPlayerColor.equals("WHITE")){
             //ChessBoard board = myGame.getGame().getBoard();
             board.setup("WHITE");
 
