@@ -60,11 +60,11 @@ public class ChessClient {
 
             else return switch (cmd){
                 case "help" -> help();
-//                case "leave" -> leaveGame();
+                case "leave" -> leaveGame();
                 case "redraw" -> redraw();
-//                case "move" -> move(params);
-//                case "resign" -> resign();
-//                case "legalMoves" -> legalMoves(params);
+                case "move" -> move(params);
+                case "resign" -> resign();
+                case "legalMoves" -> legalMoves(params);
                 };
 
 
@@ -267,6 +267,24 @@ public class ChessClient {
         } else {
             return "Success: board redrawn Black";
         }
+    }
+
+    public String leaveGame() throws ResponseException {
+        return "Success: left game";
+    }
+
+
+    public String move(String[] params) throws ResponseException {
+        return "Success: moved";
+    }
+
+
+    public String resign() throws ResponseException {
+        return "Success: resigned";
+    }
+
+    public String legalMoves(String[] params) throws ResponseException {
+        return "Success: legal moves";
     }
 
 
