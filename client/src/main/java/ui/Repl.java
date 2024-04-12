@@ -1,13 +1,21 @@
 package ui;
 
+import com.google.gson.Gson;
+import webSocketMessages.serverMessages.Error;
+import webSocketMessages.serverMessages.LoadGameMessage;
+import webSocketMessages.serverMessages.Notification;
+import webSocketMessages.serverMessages.ServerMessage;
+
 import java.util.Scanner;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_RED;
 
-public class Repl {
+
+public class Repl implements NotificationHandler{
     private final ChessClient client;
 
     public Repl(String serverUrl) {
-        this.client = new ChessClient(serverUrl);
+        this.client = new ChessClient(serverUrl, this);
     }
 
 
@@ -43,4 +51,28 @@ public class Repl {
     }
 
 
+    @Override
+    public void notify(String notification) {
+        ServerMessage message = new Notification(notification);
+        switch(message.getServerMessageType()) {
+            case NOTIFICATION -> {
+               System.out.println();
+               Notification notif = new Gson().fromJson(notification, Notification.class);
+                System.out.println(notif.getMessage());
+
+            }
+            case LOAD_GAME -> {
+                System.out.println();
+                LoadGameMessage loadGameMessage = new Gson().fromJson(notification, LoadGameMessage.class);
+                System.out.println(loadGameMessage.getGame().getBoard());
+
+            }
+
+            case ERROR -> {
+                System.out.println();
+                Error error = new Gson().fromJson(notification, Error.class);
+                System.out.println(SET_TEXT_COLOR_RED + error.getMessage());
+            }
+        }
+    }
 }

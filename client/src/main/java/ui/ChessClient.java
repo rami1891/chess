@@ -1,9 +1,9 @@
 package ui;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import exception.ResponseException;
 
@@ -15,7 +15,7 @@ import model.*;
 
 
 public class ChessClient {
-    private ChessBoard board;
+    private ChessBoardClient board;
     private final ServerFacade server;
     private final String serverUrl;
     private State state = State.PreLogin;
@@ -23,10 +23,15 @@ public class ChessClient {
     private String overPlayerColor;
     private GameData myGame;
 
-    public ChessClient(String serverUrl) {
+    private final NotificationHandler notificationHandler;
+    private WebSocketFacade webSocketFacade;
+
+
+    public ChessClient(String serverUrl, NotificationHandler notificationHandler) {
         this.serverUrl = serverUrl;
         this.server = new ServerFacade(serverUrl);
-        this.board = new ChessBoard();
+        this.board = new ChessBoardClient();
+        this.notificationHandler = notificationHandler;
 
 
 
@@ -65,7 +70,6 @@ public class ChessClient {
                 case "move" -> move(params);
                 case "resign" -> resign();
                 case "legalMoves" -> legalMoves(params);
-                case "quit" -> quit();
                 default -> help();
                 };
 
@@ -102,6 +106,7 @@ public class ChessClient {
                     - Move: move <from> <to>
                     - Resign: resign
                     - Legal Moves: legalMoves <piece>
+                    
                     """;
         }
     }
@@ -206,8 +211,13 @@ public class ChessClient {
             }
 
             server.joinObserver(gameID);
-            board.setup("ANY");
+            overPlayerColor = "ANY";
+            board.setup("ANY", myGame.getGame());
             state = State.GamePlay;
+
+            webSocketFacade = new WebSocketFacade(serverUrl, notificationHandler);
+            webSocketFacade.joinObserver(ServerFacade.getAuthToken(), gameID);
+
 
             return "Success: joined observer";
         } catch (ResponseException e) {
@@ -248,12 +258,18 @@ public class ChessClient {
             var playerColor = params[1];
             playerColor = playerColor.toUpperCase();
             server.joinGame(gameID, playerColor);
-
-
-            board.setup("ANY");
+            board.setup(playerColor, myGame.getGame());
             state = State.GamePlay;
             overPlayerColor = playerColor;
-            return "Success: joined game";
+
+            webSocketFacade = new WebSocketFacade(serverUrl, notificationHandler);
+            if(playerColor.equals("WHITE")){
+                webSocketFacade.joinGame(ServerFacade.getAuthToken(), gameID, ChessGame.TeamColor.WHITE);
+            } else{
+                webSocketFacade.joinGame(ServerFacade.getAuthToken(), gameID, ChessGame.TeamColor.BLACK);
+            }
+
+            return "Success: " + playerColor +" joined game";
         } catch (ResponseException e) {
             myGame = null;
             return "Error: " + e.getMessage();
@@ -262,16 +278,26 @@ public class ChessClient {
 
     public String redraw() {
         if(overPlayerColor.equals("WHITE")){
-            //ChessBoard board = myGame.getGame().getBoard();
-            board.setup("WHITE");
+            board.setup(overPlayerColor, myGame.getGame());
 
-            return "Success: board redrawn White";
-        } else {
-            return "Success: board redrawn Black";
+        } else if(overPlayerColor.equals("BLACK")){
+            board.setup(overPlayerColor, myGame.getGame());
+
         }
+        else{
+            board.setup("ANY", myGame.getGame());
+        }
+        return "Success: redrawn";
     }
 
     public String leaveGame() throws ResponseException {
+
+        webSocketFacade.leaveGame(ServerFacade.getAuthToken(), myGame.getGameID());
+        state = State.PostLogin;
+        overPlayerColor = null;
+
+
+
         return "Success: left game";
     }
 
@@ -282,6 +308,10 @@ public class ChessClient {
 
 
     public String resign() throws ResponseException {
+        webSocketFacade.resignGame(ServerFacade.getAuthToken(), myGame.getGameID());
+        state = State.PostLogin;
+        overPlayerColor = null;
+
         return "Success: resigned";
     }
 

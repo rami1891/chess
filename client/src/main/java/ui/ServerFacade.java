@@ -22,6 +22,10 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
+    public static String getAuthToken() {
+        return authToken;
+    }
+
     public String clear() throws ResponseException {
         var path = "/db";
         return this.makeRequest("DELETE", path, null, null);
